@@ -1,0 +1,16 @@
+{
+  "badge": "Products",
+  "inputSearch": "Search products...",
+  "errorHandling": "Error loading products",
+  "addProduct": "Product added successfuly",
+  "removeProduct": "Product removed!",
+  "reviews": "reviews",
+  "addToCart": "Add to cart",
+  "addedProduct": "Product added to cart",
+  "viewDetails": "View Details",
+  "quickAdd": "Quick Add",
+  "noDataFound": "No Data Found",
+  "EGP": "EGP",
+  "only": "Only",
+  "leftInStock": "left in stock"
+}

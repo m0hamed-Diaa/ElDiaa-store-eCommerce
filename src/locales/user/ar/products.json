@@ -1,0 +1,16 @@
+{
+  "badge": "المنتجات",
+  "inputSearch": "ابحث عن منتجات...",
+  "errorHandling": "خطأ في تحميل المنتجات",
+  "addProduct": "تمت إضافة المنتج بنجاح",
+  "removeProduct": "تم إزالة المنتج!",
+  "reviews": "التقييمات",
+  "addToCart": "إضافة إلى السلة",
+  "addedProduct": "المنتج اضيف للسلة",
+  "viewDetails": "عرض التفاصيل",
+  "quickAdd": "إضافة سريعة",
+  "noDataFound": "لا يوجد بيانات متاحة",
+  "EGP": "جنيه مصري",
+  "only": "فقط",
+  "leftInStock": "متبقي في المخزون"
+}

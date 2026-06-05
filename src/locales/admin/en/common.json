@@ -1,0 +1,18 @@
+{
+  "dashboard": "Dashboard",
+  "products": "Products",
+  "categories": "Categories",
+  "orders": "Orders",
+  "users": "Users",
+  "heroSlides": "HomePage Banners",
+  "reviews": "Reviews",
+  "coupons": "Coupons",
+  "analytics": "Analytics",
+  "settings": "Settings",
+  "logout": "Logout",
+  "superAdmin": "Super Admin",
+  "admin": "Admin",
+  "management": "Management",
+  "edit": "Edit",
+  "delete": "Delete"
+}

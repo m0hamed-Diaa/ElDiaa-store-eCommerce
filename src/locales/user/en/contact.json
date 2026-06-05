@@ -1,0 +1,25 @@
+{
+  "badge": "Contact Us",
+
+  "heroTitle": "We’re Ready To Help You",
+
+  "heroDescription": "If you have any questions or need support, feel free to contact us anytime.",
+  "contactInfo": {
+    "phone": "Phone Number",
+    "email": "Email Address",
+    "location": "Location"
+  },
+  "sendEmail": "Send Email",
+
+  "form": {
+    "title": "Send Message",
+
+    "fullName": "Full Name",
+
+    "email": "Email Address",
+
+    "message": "Write your message...",
+
+    "submit": "Send Message"
+  }
+}

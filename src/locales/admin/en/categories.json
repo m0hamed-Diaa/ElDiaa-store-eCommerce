@@ -1,0 +1,19 @@
+{
+    "categories": "Categories",
+    "addCategory": "Add Category",
+    "search": "Search categories...",
+    "filter": "Filter Categories",
+    "categoryId": "Category ID",
+    "name": "Name",
+    "products": "Products",
+    "status": "Status",
+    "action": "Action",
+    "active": "Active",
+    "inactive": "Inactive",
+    "total": "Total",
+    "empty": "Empty",
+    "tableCaption": "List of all categories in the store",
+    "noResults": "No categories found.",
+    "loading": "Loading categories...",
+    "fetchError": "Error fetching categories. Please try again later."
+}

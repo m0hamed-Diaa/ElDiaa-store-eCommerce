@@ -1,0 +1,43 @@
+{
+  "badge": "من نحن",
+
+  "heroTitle": "متجر تقني حديث بتجربة احترافية",
+
+  "heroDescription": "نحن نقدم أحدث الأجهزة الإلكترونية بتصميم عصري وتجربة استخدام قوية وسريعة.",
+
+  "exploreProducts": "تصفح المنتجات",
+
+  "features": {
+    "latestDevices": {
+      "title": "أحدث الأجهزة",
+      "description": "تجربة متكاملة واحترافية لجميع العملاء."
+    },
+
+    "fastDelivery": {
+      "title": "شحن سريع",
+      "description": "توصيل سريع وآمن لجميع المحافظات."
+    },
+
+    "securePayment": {
+      "title": "دفع آمن",
+      "description": "أنظمة دفع موثوقة وآمنة لحماية بياناتك."
+    },
+
+    "support": {
+      "title": "دعم 24/7",
+      "description": "فريق دعم متواجد دائمًا لمساعدتك."
+    }
+  },
+
+  "storyTitle": "قصتنا",
+
+  "storyDescription": "بدأنا بهدف تقديم متجر إلكتروني عصري يركز على السرعة، الجودة، وتجربة المستخدم الحديثة.",
+
+  "stats": {
+    "happyCustomers": "عميل سعيد",
+    "modernProducts": "منتج حديث",
+    "support": "دعم فني",
+    "clientSatisfaction": "رضا العملاء"
+  },
+  "location": "موقعنا"
+}

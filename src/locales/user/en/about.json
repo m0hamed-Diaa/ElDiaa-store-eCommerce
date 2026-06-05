@@ -1,0 +1,43 @@
+{
+  "badge": "About",
+
+  "heroTitle": "Modern Tech Store With Premium Experience",
+
+  "heroDescription": "We deliver the latest electronic devices with a modern shopping experience and premium performance.",
+
+  "exploreProducts": "Explore Products",
+
+  "features": {
+    "latestDevices": {
+      "title": "Latest Devices",
+      "description": "Professional shopping experience for all customers."
+    },
+
+    "fastDelivery": {
+      "title": "Fast Delivery",
+      "description": "Fast and secure delivery across all regions."
+    },
+
+    "securePayment": {
+      "title": "Secure Payment",
+      "description": "Trusted and secure payment systems for your safety."
+    },
+
+    "support": {
+      "title": "24/7 Support",
+      "description": "Our support team is always available to help you."
+    }
+  },
+
+  "storyTitle": "Our Story",
+
+  "storyDescription": "We started with a vision to create a modern eCommerce platform focused on speed, quality, and user experience.",
+
+  "stats": {
+    "happyCustomers": "Happy Customers",
+    "modernProducts": "Modern Products",
+    "support": "Support",
+    "clientSatisfaction": "Client Satisfaction"
+  },
+  "location": "Our Location"
+}

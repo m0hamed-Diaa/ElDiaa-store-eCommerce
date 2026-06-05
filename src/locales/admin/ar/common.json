@@ -1,0 +1,18 @@
+{
+  "dashboard": "اللوحة الرئيسية",
+  "products": "المنتجات",
+  "categories": "الفئات",
+  "orders": "الطلبات",
+  "users": "المستخدمون",
+  "heroSlides": "بنرات الصفحة الرئيسية",
+  "reviews": "المراجعات",
+  "coupons": "الكوبونات",
+  "analytics": "التحليلات",
+  "settings": "الإعدادات",
+  "logout": "تسجيل الخروج",
+  "superAdmin": "المدير العام",
+  "admin": "المدير",
+  "management": "الإدارة",
+  "edit": "تعديل",
+  "delete": "حذف"
+}
