@@ -20,8 +20,12 @@ export default function AuthProvider({
             const now = Date.now() / 1000;
 
             if (decoded.exp < now) {
+                if (auth.role === "user") {
+                    window.location.href = "/login";
+                } else {
+                    window.location.href = "/admin/login";
+                }
                 removeAuth();
-                window.location.href = "/login";
             }
         } catch {
             removeAuth();

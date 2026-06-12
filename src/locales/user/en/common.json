@@ -12,10 +12,14 @@
   "category": "Categories",
   "price": "Price",
   "addToCart": "Add to Cart",
-  "welcomeBack": "Welcome Back!",
+  "welcomeBack": "Welcome.Sign in",
+  "welcomeBackTitle": "Account & Menus",
   "welcomeBackContent": "Sign in to your account to continue shopping.",
+  "yourAccount": "Your Account",
+  "yourAddress": "Your Address",
   "login": "Login",
   "register": "Register",
+  "logout": "Logout",
   "email": "Email",
   "password": "Password",
   "forgotPassword": "Forgot Password?",
@@ -38,6 +42,7 @@
   "contactSupport": "Contact Support",
   "go": "Go",
   "to": "to",
+  "profile": "Profile",
   "categoriesNotFound": "Categories not available",
   "all": "All",
   "shoppingCart": "Shopping Cart",
@@ -50,5 +55,6 @@
   "EGY": "EGY",
   "checkout": "checkout",
   "close": "Close",
-  "quantity": "Quantity"
+  "quantity": "Quantity",
+  "logoutMessage": "You logout successfly"
 }

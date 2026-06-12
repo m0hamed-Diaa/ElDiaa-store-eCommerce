@@ -81,7 +81,7 @@ export default function LoginPage({ mode }: LoginPageProps) {
       rememberMe: !!rememberedEmail,
     },
   });
-// http://localhost:1337/api/customers?filters[user][id][$eq]=1&populate=*
+  // http://localhost:1337/api/customers?filters[user][id][$eq]=1&populate=*
   const onSubmit = async (
     values: LoginValues
   ) => {
@@ -100,7 +100,6 @@ export default function LoginPage({ mode }: LoginPageProps) {
           "rememberedEmail"
         );
       }
-      console.log(res);
       saveAuth({ token: res.jwt, userId: res.user.id, role: res.user.accountType ?? "user" });
 
 
@@ -274,9 +273,8 @@ export default function LoginPage({ mode }: LoginPageProps) {
               )}
             </Button>
 
-
             {mode === "user" && (
-              <>
+              <div className="flex items-center gap-2">
                 <p>{t("dontHaveAccount")}</p>
                 <Link
                   to="/register"
@@ -284,7 +282,7 @@ export default function LoginPage({ mode }: LoginPageProps) {
                 >
                   {t("createAccount")}
                 </Link>
-              </>
+              </div>
             )}
           </form>
         </CardContent>

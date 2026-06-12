@@ -21,6 +21,13 @@ import { selectCartItems } from "@/app/features/cartSlice";
 import { useGetCategoriesQuery } from "@/app/categories/user/categoryApi";
 import type { StrapiCategory } from "@/interfaces";
 import { openCartDrawer } from "@/app/features/uiSlice";
+import { getAuth, removeAuth } from "@/lib/authCookies";
+import { useGetProfileQuery } from "@/app/users/profileApi";
+import { GoPerson, GoSignOut } from "react-icons/go";
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "./ui/navigation-menu";
+import { DialogDemo } from "./shared/DialogDemo";
+import { Separator } from "./ui/separator";
+import { toast } from "sonner";
 
 const MobileNavbarMenu = () => {
     const [open, setOpen] = useState(false);
@@ -33,9 +40,96 @@ const MobileNavbarMenu = () => {
     const cartItems = useAppSelector(selectCartItems);
     const { data } = useGetCategoriesQuery({ lang });
     const dispatch = useAppDispatch();
+
+    const [islogout, setLogout] = useState(false);
+    const handleLogout = () => {
+        setLogout(true);
+        removeAuth();
+        localStorage.removeItem("rememberedEmail");
+        toast.success(t("logoutMessage"))
+    }
+
+    // User Data
+    const userLoggedIn = getAuth();
+    const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useGetProfileQuery(userLoggedIn?.userId);
     return (
         <div>
             <div className="flex items-center gap-3 md:hidden">
+                {userLoggedIn?.role === "user" ? (
+                    <NavigationMenu dir={isRTL ? "rtl" : "ltr"}>
+                        <NavigationMenuList>
+                            <NavigationMenuItem>
+                                <NavigationMenuTrigger>
+                                    {profileData?.avater?.id ? <img className="w-9 h-9 rounded-full" src={profileData?.avater?.formats?.small?.url} alt={profileData.username} /> :
+                                        <Button
+                                            className="
+                                                        flex h-8 w-8 items-center justify-center
+                                                        rounded-full bg-primary text-md font-bold text-white
+                                                    ">
+                                            {profileData?.username?.charAt(0).toUpperCase() || <GoPerson />}
+                                        </Button>
+                                    }
+                                </NavigationMenuTrigger>
+                                <NavigationMenuContent className="bg-accent z-50">
+                                    <ul className="w-50 p-2">
+                                        {isProfileLoading || isProfileError ? <p>{isRTL ? "تحميل البيانات..." : "Data loading..."}</p> :
+                                            <>
+                                                <li>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {profileData?.email}
+                                                    </p>
+                                                </li>
+                                                <Separator className="my-2" />
+                                                <li>
+                                                    <Link to="/settings/profile">
+                                                        <Button variant={"secondary"} fullWidth className="text-white text-sm mb-2">
+                                                            {t("profile")} <GoPerson />
+                                                        </Button>
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <DialogDemo loading={islogout} submitButton={t("logout")} onClick={() => handleLogout()} title={`${isRTL ? "هل انت متاكد من تسجيل الخروج!" : "Are you sure you logout!"}`} children={<Button fullWidth variant={"destructive"}>
+                                                        {t("logout")} <GoSignOut />
+                                                    </Button>} />
+                                                </li></>
+                                        }
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuItem>
+                        </NavigationMenuList>
+                    </NavigationMenu>
+                ) : (
+                    <NavigationMenu dir={isRTL ? "rtl" : "ltr"}>
+                        <NavigationMenuList>
+                            <NavigationMenuItem>
+                                <NavigationMenuTrigger>
+                                    {t("welcomeBack")} <br />
+                                    {t("welcomeBackTitle")}
+                                </NavigationMenuTrigger>
+                                <NavigationMenuContent className="bg-accent z-50">
+                                    <ul className="w-58">
+                                        <li className="flex items-center justify-center">
+                                            <Button variant="link" className="w-fit text-white">
+                                                <Link to="/login">
+                                                    {t("login")}
+                                                </Link>
+                                            </Button>
+                                        </li>
+                                        <li className="flex items-center">
+                                            <p>{t("dontHaveAccount")}</p>
+                                            <Button variant="link" className="w-fit mx-auto text-white">
+                                                <Link to="/register">
+                                                    {t("register")}
+                                                </Link>
+                                            </Button>
+                                        </li>
+                                    </ul>
+                                </NavigationMenuContent>
+                            </NavigationMenuItem>
+                        </NavigationMenuList>
+                    </ NavigationMenu>
+                )}
+
                 {/* Cart */}
                 <Button
                     size="icon"
@@ -68,7 +162,7 @@ const MobileNavbarMenu = () => {
                     >
                         <SheetHeader>
                             <SheetTitle className={`mt-4 text-lg ${isRTL ? "mr-4" : "ml-4"}`}>
-                                {t("welcome")} <span className="text-primary underline text-lg">User</span> {t("to")} {t("appName")}
+                                {t("welcome")} <span className="text-primary underline text-lg">{profileData?.username || "User"}</span> {t("to")} {t("appName")}
                             </SheetTitle>
 
                             {/* Logo */}

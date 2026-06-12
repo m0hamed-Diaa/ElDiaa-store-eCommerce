@@ -12,5 +12,7 @@
   "noDataFound": "No Data Found",
   "EGP": "EGP",
   "only": "Only",
-  "leftInStock": "left in stock"
+  "leftInStock": "left in stock",
+  "addWishlist": "Added to wishlist",
+  "removeWishlist": "Removed from wishlist"
 }

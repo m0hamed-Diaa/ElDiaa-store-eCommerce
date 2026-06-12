@@ -22,7 +22,7 @@ interface IProps {
     description?: string;
     submitButton: string;
     onClick: () => void;
-    loading: boolean
+    loading: boolean;
 }
 
 export function DialogDemo({ children, title, description, body, submitButton, onClick, loading = false }: IProps) {

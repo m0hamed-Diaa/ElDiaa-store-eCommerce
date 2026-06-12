@@ -1,3 +1,4 @@
+import type { IUserProfile } from "@/interfaces";
 import { getAuth } from "@/lib/authCookies";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -26,8 +27,9 @@ export const userProfileApi = createApi({
     }),
 
     endpoints: (builder) => ({
-        getProfile: builder.query({
+        getProfile: builder.query<IUserProfile, { id: number }>({
             query: (id) => `/users/${id}?populate=*`,
+            // query: ({ id }) => `/customers?filters[user][id][$eq]=${id}&populate=*`,
             providesTags: ["Profile"],
         }),
 

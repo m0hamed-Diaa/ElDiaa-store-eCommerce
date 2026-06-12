@@ -34,7 +34,7 @@ export const productsApi = createApi({
 
 
                 return params + categoryFilter + discountFilter + searchQuery + sortQuery;
-            }
+            },
         }), getSingleProduct: builder.query<
             StrapiSingleResponse<IProduct>,
             { lang: string; documentId: string }

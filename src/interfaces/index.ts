@@ -1,25 +1,3 @@
-export interface IRegisterInput {
-  name: "email" | "username" | "password";
-  placeholder: string;
-  type: string;
-  validation: {
-    required?: boolean;
-    minLength?: number;
-    pattern?: RegExp;
-  };
-}
-
-export interface ILoginInput {
-  name: "identifier" | "password";
-  placeholder: string;
-  type: string;
-  validation: {
-    required?: boolean;
-    minLength?: number;
-    pattern?: RegExp;
-  };
-}
-
 export interface IErrorResponse {
   error: {
     details?: {
@@ -109,11 +87,11 @@ export interface IProduct {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
-  
+
   thumbnail: StrapiImage;
-  
+
   categories: StrapiCategory[];
-  
+
   localizations: StrapiLocalization[];
 }
 
@@ -121,14 +99,14 @@ export interface IProduct {
 export interface IHeroSlide {
   id: number;
   documentId: string;
-  
+
   title: string;
   subtitle?: string;
 
   linkType: "category" | "product" | "discount" | "custom";
 
   discountOnly?: boolean;
-  
+
   customUrl?: string | null;
 
   image: {
@@ -140,14 +118,22 @@ export interface IHeroSlide {
     documentId: string;
     title: string;
   };
-  
+
   locale: string;
   createdAt: string;
   publishedAt?: string;
 }
 
 
-
+export interface IUserProfile {
+  id: number;
+  documentId: string;
+  username: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  avater?: StrapiImage;
+}
 
 /**
  {

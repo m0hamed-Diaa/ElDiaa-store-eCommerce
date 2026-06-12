@@ -79,7 +79,10 @@ export default function ProductCard({ p, showActions = true, isForDetails = fals
 
                     {/* Wishlist */}
                     <button
-                        onClick={() => dispatch(toggleHeart(p.id))}
+                        onClick={() => {
+                            dispatch(toggleHeart(p.id))
+                            toast(isLoved ? `${t("removeWishlist")}` : `${t("addWishlist")}`)
+                        }}
                         className={`absolute top-3 z-10 rounded-full bg-background/80 p-2 shadow backdrop-blur transition hover:scale-110 ${isRTL ? "left-3" : "right-3"}`}
                     >
                         <FaHeart className={isLoved ? "text-red-500" : "text-muted-foreground"} />

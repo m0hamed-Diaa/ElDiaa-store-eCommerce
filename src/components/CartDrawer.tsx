@@ -56,7 +56,7 @@ export function CartDrawer() {
     // Decrease Product
     const DecreaseProduct = (id: number) => {
         dispatch(decreaseQuantity(id))
-        toast.success(t("increaseProduct"))
+        toast.success(t("decreaseProduct"))
     }
     const [isLoading, setLoading] = useState<boolean>(false);
     // Delete Product
@@ -88,7 +88,7 @@ export function CartDrawer() {
             >
                 <DrawerHeader
                     className={`
-                        border-b pb-4
+                        border-b pb-4 
                         ${isRTL ? "text-right" : "text-left"}
                     `}
                 >
@@ -102,6 +102,9 @@ export function CartDrawer() {
                             {t("products")} <span className="text-primary text-md font-bold underline">{cartItems.length}</span></> :
                             <><span className="text-primary text-md font-bold underline">{cartItems.length}</span> {t("products")}</>}
                     </DrawerDescription>
+                    <Link to="/checkout">
+                        <Button disabled={!cartItems.length} variant={"secondary"} className={`w-fit absolute top-6 ${isRTL ? "left-4" : "right-4"}`}>{t("go")} {t("to")} {t("checkout")}</Button>
+                    </Link>
                 </DrawerHeader>
 
                 {/* CART ITEMS */}
@@ -130,7 +133,7 @@ export function CartDrawer() {
                                         <Button className="w-2 h-5" variant={"outline"} onClick={() => IncreaseProduct(item.id)}><GoPlus /></Button>
                                         {item.quantity === 1 ?
                                             <DialogDemo title={`${isRTL ? `هل تريد حذف هذا المنتج؟ ${item.title}` : `Delete this product?: ${item.title}`}`} submitButton={`${isRTL ? "حذف المنتج" : "Delete product"}`} onClick={() => DeleteProduct(item.id)} loading={isLoading}>
-                                                <RiDeleteBin5Fill className="w-4 h-5 duration-300 hover:text-(--destructive-hover) cursor-pointer" />
+                                                <RiDeleteBin5Fill className="w-4 h-5 duration-300 hover:text-destructive cursor-pointer" />
                                             </DialogDemo>
                                             : <Button className="w-2 h-5" variant={"outline"} onClick={() => DecreaseProduct(item.id)}> <FiMinus /> </Button>}
                                     </div>
@@ -163,11 +166,11 @@ export function CartDrawer() {
                         <span>{totalPrice} {t("EGY")}</span>
                     </div>
 
-                    <Button asChild disabled={!cartItems.length}>
-                        <Link to="/checkout">
+                    <Link to="/checkout">
+                        <Button fullWidth disabled={!cartItems.length}>
                             {t("checkout")}
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
 
                     <DrawerClose asChild>
                         <Button variant="outline">

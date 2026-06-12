@@ -4,6 +4,7 @@ import type { RootState } from "@/app/store";
 import ProductCard from "@/components/ProductCard";
 import ProductCardSkeleton from "@/components/skeletens/ProductCardSkeleton";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ProductDetails = () => {
@@ -13,6 +14,13 @@ const ProductDetails = () => {
     const { data, isLoading } = useGetSingleProductQuery({ lang, documentId: documentId! })
     const product = data?.data;
     const navigate = useNavigate();
+    useEffect(() => {
+        if (product?.title) {
+            document.title = `${product?.title}`;
+        } else {
+            document.title = "عنوان افتراضي";
+        }
+    });
     if (isLoading) {
         return (
             <div className="h-screen my-10">
