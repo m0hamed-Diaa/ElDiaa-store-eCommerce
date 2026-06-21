@@ -72,13 +72,13 @@ const ErrorHandler = ({
         <div className="pt-8 border-t border-gray-200 dark:border-gray-800">
           <p className="text-sm text-gray-500 dark:text-gray-500">
             <span>{t("needHelp")}</span>
-            <Button variant={"outline"} className="p-2 ml-2 rtl:ml-0 rtl:mr-2">
-              <a
-                href="tel:+201095382588"
-              >
+            <a
+              href="tel:+201095382588"
+            >
+              <Button variant={"outline"} className="p-2 ml-2 rtl:ml-0 rtl:mr-2">
                 {t("contactSupport")} 📞
-              </a>
-            </Button>
+              </Button>
+            </a>
           </p>
         </div>
       </div>

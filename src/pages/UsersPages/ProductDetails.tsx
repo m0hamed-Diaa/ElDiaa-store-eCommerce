@@ -4,6 +4,8 @@ import type { RootState } from "@/app/store";
 import ProductCard from "@/components/ProductCard";
 import ProductCardSkeleton from "@/components/skeletens/ProductCardSkeleton";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePageTitle } from "@/components/usePageTitle";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,21 +16,23 @@ const ProductDetails = () => {
     const { data, isLoading } = useGetSingleProductQuery({ lang, documentId: documentId! })
     const product = data?.data;
     const navigate = useNavigate();
+    usePageTitle("الأعدادات | متجر الضياء للإلكترونيات", "Settings | El-diaa Store For Electronics")
+
     useEffect(() => {
         if (product?.title) {
-            document.title = `${product?.title}`;
+            usePageTitle(`متجر الضياء للإلكترونيات | ${product?.title}`, `${product?.title} | El-diaa Store For Electronics`)
         } else {
-            document.title = "عنوان افتراضي";
+            usePageTitle(`غير متاح | متجر الضياء للإلكترونيات`, `Undefiend | El-diaa Store For Electronics`)
         }
     });
-    if (isLoading) {
+    if (!isLoading) {
         return (
             <div className="h-screen my-10">
                 <div className="w-full sm:w-82.5 mx-auto">
                     <div className="relative h-10 w-20 mb-5 overflow-hidden rounded-xl bg-muted/40">
-                        <div className="absolute inset-0 shimmer" />
+                        <Skeleton className="w-20 h-10" />
                     </div>
-                    <ProductCardSkeleton />
+                    <ProductCardSkeleton showButtonDetails={false} />
                 </div>
             </div>
         );

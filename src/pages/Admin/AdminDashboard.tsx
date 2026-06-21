@@ -4,6 +4,7 @@ import DropdownMenuActions from "@/components/shared/DropdownMenuActions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
+import UserProfileIcon from "@/components/UserProfileIcon";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
@@ -67,6 +68,7 @@ export default function AdminDashboard() {
       action: null,
     },
   ];
+
   return (
     <div className="min-h-screen bg-muted/30 w-full">
       <div className="flex">
@@ -74,7 +76,7 @@ export default function AdminDashboard() {
         <main className="flex-1">
           {/* HEADER */}
           <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
-            <div className="flex h-16 items-center justify-between px-6">
+            <div className="flex h-16 items-center justify-between px-6 mb-4">
               <div>
                 <h2 className="text-2xl font-bold">
                   {t("dashboard")}
@@ -83,17 +85,7 @@ export default function AdminDashboard() {
                   {t("dashboardTitle")}
                 </p>
               </div>
-
-              <div className="flex items-center gap-3">
-                <input
-                  placeholder={t("searchPlaceholder")}
-                  className="h-10 rounded-xl border bg-background px-4 text-sm outline-none"
-                />
-
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                  MD
-                </div>
-              </div>
+              <UserProfileIcon />
             </div>
           </header>
 

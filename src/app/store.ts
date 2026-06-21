@@ -32,6 +32,7 @@ import { adminCategoriesApi } from "./categories/admin/categoryApi";
 import { adminHeroSlidesApi } from "./hero-slides/admin/heroSlice";
 import { authApiSlice } from "./users/authApi";
 import { userProfileApi } from "./users/profileApi";
+import { uploadApi } from "./features/Upload/uploadApi";
 
 const cartPersistConfig = {
     key: "cart",
@@ -56,13 +57,14 @@ export const store = configureStore({
         // Authentication and User Profile
         [authApiSlice.reducerPath]: authApiSlice.reducer,
         [userProfileApi.reducerPath]: userProfileApi.reducer,
+        [uploadApi.reducerPath]: uploadApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(productsApi.middleware, adminProductsApi.middleware, categoryApi.middleware, adminCategoriesApi.middleware, heroSlideApi.middleware, adminHeroSlidesApi.middleware, authApiSlice.middleware, userProfileApi.middleware),
+        }).concat(productsApi.middleware, adminProductsApi.middleware, categoryApi.middleware, adminCategoriesApi.middleware, heroSlideApi.middleware, adminHeroSlidesApi.middleware, authApiSlice.middleware, userProfileApi.middleware, uploadApi.middleware),
 });
 
 export const persistor = persistStore(store);

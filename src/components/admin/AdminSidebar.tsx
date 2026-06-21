@@ -23,14 +23,17 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Button } from "../ui/button";
-import LanguageToggle from "../ui/LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { selectLang } from "@/app/features/language/languageSlice";
 import { useAppSelector } from "@/app/hooks";
 import { useSidebar } from "@/components/ui/sidebar";
-import DarkModeToggle from "../ui/DarkModeToggle";
+import { getAuth } from "@/lib/authCookies";
+import { useGetCustomerByUserQuery, useGetProfileQuery } from "@/app/users/profileApi";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Skeleton } from "../ui/skeleton";
+import { GoPerson } from "react-icons/go";
 
 const Pages = [
     {
@@ -96,6 +99,11 @@ export function AdminSidebar() {
     const { t } = useTranslation("adminCommon");
     const lang = useAppSelector(selectLang);
     const isRTL = lang === "ar";
+
+    const userLoggedIn = getAuth();
+    const { data: profileData, isLoading } = useGetProfileQuery(userLoggedIn?.userId);
+    const { data: customerData, isLoading: isCustomerLoading } = useGetCustomerByUserQuery(userLoggedIn?.userId);
+
     const { state, setOpenMobile, isMobile } = useSidebar();
     const isCollapsed = state === "collapsed";
     const handleClick = () => {
@@ -115,50 +123,48 @@ export function AdminSidebar() {
             {/* HEADER */}
             <SidebarHeader className={`border-b ${isCollapsed ? "p-2" : "p-4"}`}>
 
-                <div className={`
+                <Link to="/admin/settings/profile" onClick={handleClick} className={`
                         flex items-center
                         ${isCollapsed ? "justify-center" : "gap-3"}
                     `}>
 
                     {isCollapsed ? (
-
-                        <Button
-                            className="
-            flex h-8 w-8 items-center justify-center
-            rounded-full bg-primary text-md font-bold text-white
-        "
-                        >
-                            M
-                        </Button>
+                        <>
+                            {isLoading || isCustomerLoading ? <Skeleton className="h-8 w-8 rounded-full" /> : (<Avatar className="h-8 w-8" >
+                                <AvatarImage src={customerData?.avater?.formats?.small?.url || customerData?.avater?.url} />
+                                <AvatarFallback>{profileData?.username?.charAt(0).toUpperCase() || <GoPerson />}</AvatarFallback>
+                            </Avatar>)}</>
                     ) : (
                         <>
-                            <img
-                                src="https://res.cloudinary.com/dper3maw4/image/upload/v1779563885/thumbnail_PXL_20220514_114447285_PORTRAIT_3ce6d1595f.jpg"
-                                alt="Admin"
-                                className="
-                h-12 w-12 rounded-full
-                border-2 border-primary
-                object-cover
-            "
-                            />
+                            {isLoading || isCustomerLoading ? <div className="flex items-center gap-4">
+                                <Skeleton className="h-9 w-9 rounded-full" />
+                                <div>
+                                    <Skeleton className="h-4 w-25" />
+                                    <Skeleton className="h-4 w-20 mt-2" />
+                                </div>
+                            </div> : (
+                                <>
+                                    <Avatar className="h-9 w-9" >
+                                        <AvatarImage src={customerData?.avater?.formats?.small?.url || customerData?.avater?.url} />
+                                        <AvatarFallback>{profileData?.username?.charAt(0).toUpperCase() || <GoPerson />}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex flex-col">
+                                        <h2 className="text-sm font-bold">
+                                            {profileData?.username || "-"}
+                                        </h2>
 
-                            <div className="flex flex-col">
-                                <h2 className="text-sm font-bold">
-                                    Mohamed Diaa
-                                </h2>
+                                        <p className="text-xs text-muted-foreground">
+                                            {t("superAdmin")}
+                                        </p>
+                                    </div></>
+                            )}
 
-                                <p className="text-xs text-muted-foreground">
-                                    {t("superAdmin")}
-                                </p>
-                            </div>
+
                         </>
 
                     )}
-                </div>
+                </Link>
             </SidebarHeader>
-
-            <LanguageToggle />
-            <DarkModeToggle />
 
             {/* CONTENT */}
             <SidebarContent>
@@ -222,6 +228,6 @@ export function AdminSidebar() {
                     <LogOut className="h-4 w-4" />
                 </Button>
             </SidebarFooter>
-        </Sidebar>
+        </Sidebar >
     );
 }

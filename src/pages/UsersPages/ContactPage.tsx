@@ -13,11 +13,13 @@ import {
 import { selectLang } from "@/app/features/language/languageSlice";
 import { useTranslation } from "react-i18next";
 import companyLogo from "@/assets/mohamedDiaa-logo.png";
+import { usePageTitle } from "@/components/usePageTitle";
 
 const ContactPage = () => {
   const lang = useSelector(selectLang);
   const isRTL = lang === "ar";
   const { t } = useTranslation("contact");
+  usePageTitle("التواصل | متجر الضياء للإلكترونيات", "Contact | El-diaa Store For Electronics")
 
   return (
     <div
@@ -39,7 +41,7 @@ const ContactPage = () => {
             {t("heroDescription")}
           </p>
 
-            <img src={companyLogo} className="w-full max-w-3xl my-4 border border-primary rounded-xl" alt={isRTL ? "صورة" : "Image"} />
+          <img src={companyLogo} className="w-full max-w-3xl my-4 border border-primary rounded-xl" alt={isRTL ? "صورة" : "Image"} />
 
         </div>
       </section>

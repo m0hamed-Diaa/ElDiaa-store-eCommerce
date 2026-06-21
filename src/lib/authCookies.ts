@@ -5,7 +5,6 @@ const cookies = new Cookies();
 const COOKIE_NAME = "auth";
 
 const ONE_WEEK = 7 * 24 * 60 * 60;
-// const ONE_WEEK = 2 * 60;
 
 interface AuthCookies {
     token: string;
@@ -26,6 +25,8 @@ export const getAuth = () => {
 };
 
 export const removeAuth = () => {
+    console.trace("AUTH REMOVED");
+
     cookies.remove(COOKIE_NAME, {
         path: "/",
     });

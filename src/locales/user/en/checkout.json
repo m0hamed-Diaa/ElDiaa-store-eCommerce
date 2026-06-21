@@ -1,0 +1,15 @@
+{
+  "checkout": "Checkout",
+  "shippingAdd": "Shipping Address",
+  "paymentMethod": " Payment Mehtod",
+  "cashOnDelivery": "Cash On Delivery",
+  "creditCard": "Credit Card",
+  "payPal": "PayPal",
+  "orderSummary": "Order Summary",
+  "subtotal": "SubTotal",
+  "shipping": "Shipping",
+  "tax": "Tax",
+  "total": "Total",
+  "apply": "Apply",
+  "placeOrder": "Place Order"
+}

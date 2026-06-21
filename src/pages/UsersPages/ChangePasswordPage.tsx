@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,61 +13,81 @@ import {
 } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
-import AuthLayout from "./AuthLayout";
-import { useResetPasswordMutation } from "@/app/users/authApi";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/app/hooks";
 import { selectLang } from "@/app/features/language/languageSlice";
-import { getAuth } from "@/lib/authCookies";
-import { Eye, EyeOff } from "lucide-react";
+import { useChangePasswordMutation } from "@/app/users/profileApi";
+import { useNavigate } from "react-router-dom";
+import { removeAuth } from "@/lib/authCookies";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { usePageTitle } from "@/components/usePageTitle";
 
-const createResetSchema = (isRTL: boolean) => z.object({
-    password: z
-        .string()
-        .min(
-            8,
-            `${isRTL ? "كلمة المرور يجب ان تكون قوية و 8 احرف على الاقل" : "Password must be strong & at least 8 characters"}`
-        ),
+const ChangePasswordSchema = (
+    isRTL: boolean
+) =>
+    z
+        .object({
+            currentPassword: z
+                .string()
+                .min(
+                    1,
+                    isRTL
+                        ? "ادخل كلمة المرور الحالية"
+                        : "Current password is required"
+                ),
 
-    confirmPassword: z.string(),
-})
-    .refine(
-        (data) =>
-            data.password ===
-            data.confirmPassword,
-        {
-            message:
-                `${isRTL ? "كلمتا المرور غير متطابقتين" : "Passwords do not match"}`,
-            path: ["confirmPassword"],
-        }
-    );
+            password: z
+                .string()
+                .min(
+                    8,
+                    isRTL
+                        ? "كلمة المرور يجب أن تكون 8 أحرف على الأقل"
+                        : "Password must be at least 8 characters"
+                ),
+
+            confirmPassword: z
+                .string()
+                .min(
+                    1,
+                    isRTL
+                        ? "أكد كلمة المرور"
+                        : "Confirm password is required"
+                ),
+        })
+        .refine(
+            (data) =>
+                data.password ===
+                data.confirmPassword,
+            {
+                path: ["confirmPassword"],
+                message: isRTL
+                    ? "كلمتا المرور غير متطابقتين"
+                    : "Passwords do not match",
+            }
+        );
 
 
-export default function ResetPasswordPage() {
-    if (getAuth()?.token) {
-        return <Navigate to="/" replace />;
-    }
+export default function ChangePasswordPage() {
+    const navigate = useNavigate();
     const { t } = useTranslation("common");
     const lang = useAppSelector(selectLang);
     const isRTL = lang === "ar";
+    usePageTitle("تغيير الباسورد | متجر الضياء للإلكترونيات", "change Password | El-diaa Store For Electronics")
 
-    const navigate = useNavigate();
-    const [searchParams] =
-        useSearchParams();
-    // show password 
+    // show current password
+    const [showCurrentPassword, setCurrentPassword] =
+        useState(false);
+    // show new password
     const [showPassword, setShowPassword] =
         useState(false);
 
-    const code =
-        searchParams.get("code");
-
-    const [resetPassword, { isLoading }] = useResetPasswordMutation();
-
+    const [changePassword, { isLoading }] =
+        useChangePasswordMutation();
     const resetSchema =
-        createResetSchema(isRTL);
+        ChangePasswordSchema(isRTL);
 
     type FormValues =
         z.infer<typeof resetSchema>;
@@ -84,6 +103,7 @@ export default function ResetPasswordPage() {
     } = useForm<FormValues>({
         resolver: zodResolver(resetSchema),
         defaultValues: {
+            currentPassword: "",
             password: "",
             confirmPassword: ""
         }
@@ -93,26 +113,42 @@ export default function ResetPasswordPage() {
         values: FormValues
     ) => {
         try {
-            await resetPassword({
-                code,
-                password: values.password,
+            await changePassword({
+                currentPassword:
+                    values.currentPassword,
+
+                password:
+                    values.password,
+
                 passwordConfirmation:
                     values.confirmPassword,
             }).unwrap();
             reset();
-            toast.success(`${isRTL ? "كلمة المرور اتعدلت بنجاح" : "Password updated successfully"}`);
-            navigate("/login", { replace: true });
+
+            // Required Logout
+            removeAuth();
+            localStorage.removeItem("rememberedEmail");
+            // Go to Login Page
+            setTimeout(() => {
+                navigate("/login");
+            }, 1000);
+
+            toast.success(
+                isRTL
+                    ? "تم تغيير كلمة المرور بنجاح، اعمل تسجيل دخول من جديد للأمان"
+                    : "Password changed successfully, login again for security"
+            );
         } catch {
             toast.error(
                 (isRTL
-                    ? "حصلت غلطة"
-                    : "Something went wrong")
+                    ? "فشل فى تغيير كلمة المرور او كلمة مرورك القديمة غلط!"
+                    : "Failed to change password or your old password is false!")
             );
         }
     };
 
     return (
-        <AuthLayout>
+        <div className="flex items-center justify-center h-[84vh]">
             <Card className="w-full max-w-md">
                 <CardHeader>
                     <CardTitle>
@@ -131,6 +167,47 @@ export default function ResetPasswordPage() {
                         )}
                         className="space-y-4"
                     >
+                        <div className="relative">
+                            <Input
+                                type={
+                                    showCurrentPassword
+                                        ? "text"
+                                        : "password"
+                                }
+                                placeholder={isRTL ? "ادخل كلمة مرورك القديمة..." : "Enter ypur old Password..."}
+                                disabled={isLoading || isSubmitting}
+                                {...register(
+                                    "currentPassword"
+                                )}
+                            />
+
+                            <button
+                                type="button"
+                                className={`absolute ${isRTL ? "left-3" : "right-3"} top-1/2 -translate-y-1/2`}
+                                onClick={() =>
+                                    setCurrentPassword(
+                                        !showCurrentPassword
+                                    )
+                                }
+                            >
+                                {showPassword ? (
+                                    <EyeOff size={18} />
+                                ) : (
+                                    <Eye size={18} />
+                                )}
+                            </button>
+
+                            {errors.currentPassword && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {
+                                        errors
+                                            .currentPassword
+                                            .message
+                                    }
+                                </p>
+                            )}
+                        </div>
+
                         <div className="relative">
                             <Input
                                 type={
@@ -235,6 +312,6 @@ export default function ResetPasswordPage() {
                     </form>
                 </CardContent>
             </Card>
-        </AuthLayout>
+        </div>
     );
 }

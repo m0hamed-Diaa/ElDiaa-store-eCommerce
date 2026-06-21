@@ -6,11 +6,15 @@ export default function UserProtectedRoute() {
   const location = useLocation();
 
   if (!auth?.token) {
+    sessionStorage.setItem(
+      "redirectAfterAuth",
+      location.pathname +
+      location.search
+    );
     return (
       <Navigate
         to="/login"
         replace
-        state={{ from: location }}
       />
     );
   }

@@ -125,14 +125,35 @@ export interface IHeroSlide {
 }
 
 
+export interface ICustomerProfile {
+  fullName: string | undefined;
+  id: number;
+  documentId: string;
+  phone: string;
+  address: string;
+  city: string;
+  country: string;
+  avater: StrapiImage;
+  username: string;
+  user: {
+    id: number;
+    documentId: string;
+    username: string;
+    email: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
 export interface IUserProfile {
   id: number;
   documentId: string;
+  accountType?: string;
   username: string;
   email: string;
-  phone?: string;
-  address?: string;
-  avater?: StrapiImage;
+  createdAt: string;
+  updatedAt: string;
 }
 
 /**

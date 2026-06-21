@@ -10,6 +10,8 @@ import { useSearchParams } from "react-router-dom";
 import PaginationDemo from "@/components/shared/PaginationDemo";
 import { useGetProductsQuery } from "@/app/products/user/productsApi";
 import SelectComponent from "@/components/shared/SelectSorting";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePageTitle } from "@/components/usePageTitle";
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
@@ -22,6 +24,7 @@ const ProductsPage = () => {
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<"desc" | "asc">("desc");
   const [page, setPage] = useState(1);
+  usePageTitle("المنتجات | متجر الضياء للإلكترونيات", "Products | El-diaa Store For Electronics")
 
   // const pageSize = 6;
   const { data, error, isLoading } = useGetProductsQuery({ lang, search, category, discount: discount === "true", sort, page: page });
@@ -29,12 +32,13 @@ const ProductsPage = () => {
   if (isLoading) {
     return (
       <>
-        <div className="flex justify-between my-10 px-10">
-          <div className="relative h-10 w-25 overflow-hidden rounded-xl bg-muted/40">
-            <div className="absolute inset-0 shimmer" />
-          </div>
-          <div className="relative h-10 w-full md:w-80 overflow-hidden rounded-xl bg-muted/40">
-            <div className="absolute inset-0 shimmer" />
+        <div className="flex flex-col gap-4 my-4 px-10 md:flex-row md:items-center md:justify-between relative">
+          <Skeleton className="h-10 w-40" />
+
+          <Skeleton className="h-10 md:w-80 w-full" />
+
+          <div className={`absolute top-0 ${isRTL ? "left-10" : "right-10"} md:relative`}>
+            <Skeleton className="h-10 w-32" />
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-10">

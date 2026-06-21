@@ -1,36 +1,60 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { getAuth, removeAuth } from "@/lib/authCookies";
 
-interface Props {
-    children: React.ReactNode;
-}
+import { getAuth, removeAuth } from "@/lib/authCookies";
+import { SessionExpiredDialog } from "@/components/SessionExpiredDialog";
 
 export default function AuthProvider({
     children,
-}: Props) {
+}: {
+    children: React.ReactNode;
+}) {
+    const [sessionExpired, setSessionExpired] =
+        useState(false);
+    const [user, setUser] =
+        useState("");
+
     useEffect(() => {
-        const auth = getAuth();
+        const interval = setInterval(() => {
+            const auth = getAuth();
 
-        if (!auth?.token) return;
+            if (!auth?.token) return;
 
-        try {
-            const decoded: any = jwtDecode(auth.token);
+            const logoutPath =
+                auth.role === "admin"
+                    ? "/admin/login"
+                    : "/login";
 
-            const now = Date.now() / 1000;
+            try {
+                const decoded: any =
+                    jwtDecode(auth.token);
 
-            if (decoded.exp < now) {
-                if (auth.role === "user") {
-                    window.location.href = "/login";
-                } else {
-                    window.location.href = "/admin/login";
+                if (
+                    decoded.exp * 1000 <=
+                    Date.now()
+                ) {
+                    clearInterval(interval);
+
+                    removeAuth();
+                    setUser(logoutPath);
+                    setSessionExpired(true);
                 }
+            } catch {
                 removeAuth();
             }
-        } catch {
-            removeAuth();
-        }
+        }, 60000);
+
+        return () => clearInterval(interval);
     }, []);
 
-    return <>{children}</>;
+    return (
+        <>
+            {children}
+
+            <SessionExpiredDialog
+                type={user}
+                open={sessionExpired}
+            />
+        </>
+    );
 }

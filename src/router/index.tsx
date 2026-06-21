@@ -10,7 +10,7 @@ import UserLayout from "@/pages/UsersPages/Layout";
 import ProductsPage from "@/pages/UsersPages/ProductsPage";
 import AboutPage from "@/pages/UsersPages/AboutPage";
 import ContactPage from "@/pages/UsersPages/ContactPage";
-import SettingsPage from "@/pages/UsersPages/SettingsPage";
+import SettingsPage from "@/pages/shared/SettingsPage";
 import ProductDetails from "@/pages/UsersPages/ProductDetails";
 import AdminLayout from "@/pages/Admin/AdminLayout";
 import AdminDashboard from "@/pages/Admin/AdminDashboard";
@@ -22,15 +22,15 @@ import UsersPage from "@/pages/Admin/UsersPage";
 import ReviewsPage from "@/pages/Admin/ReviewsPage";
 import CouponsPage from "@/pages/Admin/CouponsPage";
 import AnalyticsPage from "@/pages/Admin/AnalyticsPage";
-import AdminSettingsPage from "@/pages/Admin/SettingsPage";
 import Checkout from "@/pages/UsersPages/Checkout";
-import ProfilePage from "@/pages/UsersPages/ProfilePage";
+import ProfilePage from "@/pages/shared/ProfilePage";
 import UserProtectedRoute from "@/components/auth/UserProtectedRoute";
 import AdminProtectedRoute from "@/components/auth/AdminProtectedRoute";
 import LoginPage from "@/pages/auth/Login";
 import RegisterPage from "@/pages/auth/Register";
 import ResetPasswordPage from "@/pages/auth/ResetPassword";
 import ForgotPasswordPage from "@/pages/auth/ForgotPassword";
+import ChangePasswordPage from "@/pages/UsersPages/ChangePasswordPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,18 +67,18 @@ const router = createBrowserRouter(
             <ContactPage />
           }
         />
-        <Route
-          path="settings"
-          element={
-            <SettingsPage />
-          }
-        />
         {/* Protected Routes */}
         <Route element={<UserProtectedRoute />}>
           <Route
-            path="checkout"
+            path="/checkout"
             element={
               <Checkout />
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <SettingsPage />
             }
           />
           <Route
@@ -87,9 +87,14 @@ const router = createBrowserRouter(
               <ProfilePage />
             }
           />
+          <Route
+            path="/settings/profile/change-password"
+            element={
+              <ChangePasswordPage />
+            }
+          />
         </Route>
-        {/* Page Not Found */}
-        <Route path="*" element={<PageNotFound path={"/"} />} />
+
       </Route>
       {/* Adminpages path */}
       <Route element={<AdminProtectedRoute />}>
@@ -151,11 +156,21 @@ const router = createBrowserRouter(
           <Route
             path="settings"
             element={
-              <AdminSettingsPage />
+              <SettingsPage />
             }
           />
-          {/* Page Not Found */}
-          <Route path="*" element={<PageNotFound path={"/admin"} />} />
+          <Route
+            path="settings/profile"
+            element={
+              <ProfilePage />
+            }
+          />
+          <Route
+            path="settings/profile/change-password"
+            element={
+              <ChangePasswordPage />
+            }
+          />
         </Route>
       </Route>
 
@@ -173,7 +188,7 @@ const router = createBrowserRouter(
       />
 
       {/* Page Not Found */}
-      {/* <Route path="*" element={<PageNotFound path={"/"} />} /> */}
+      <Route path="*" element={<PageNotFound path={"/"} />} />
     </>
   )
 );

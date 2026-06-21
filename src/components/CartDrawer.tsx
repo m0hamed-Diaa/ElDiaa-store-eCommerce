@@ -25,17 +25,20 @@ import {
 } from "@/app/features/cartSlice";
 import { closeCartDrawer, selectIsDrawerOpen } from "@/app/features/uiSlice";
 import { selectLang } from "@/app/features/language/languageSlice";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { GoPlus } from "react-icons/go";
 import { FiMinus } from "react-icons/fi";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { FaShoppingBasket } from "react-icons/fa";
 import { DialogDemo } from "./shared/DialogDemo";
+import { useGetProfileQuery } from "@/app/users/profileApi";
+import { getAuth } from "@/lib/authCookies";
 
 
 export function CartDrawer() {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const { t } = useTranslation("common");
 
@@ -70,6 +73,19 @@ export function CartDrawer() {
         dispatch(closeCartDrawer());
     }
 
+    // User Data
+    const userLoggedIn = getAuth();
+    const { data } = useGetProfileQuery(userLoggedIn?.userId);
+
+    const isLogin = () => {
+        if (data?.documentId) {
+            dispatch(closeCartDrawer());
+        } else {
+            toast.info(`${isRTL ? "يجب أن تسجل دخول أولا للذهاب لصفحة الدفع" : "You should login first to go to checkout"}`)
+            navigate("/login", { replace: true });
+        }
+    }
+
     return (
         <Drawer
             open={isOpen}
@@ -102,7 +118,7 @@ export function CartDrawer() {
                             {t("products")} <span className="text-primary text-md font-bold underline">{cartItems.length}</span></> :
                             <><span className="text-primary text-md font-bold underline">{cartItems.length}</span> {t("products")}</>}
                     </DrawerDescription>
-                    <Link to="/checkout">
+                    <Link to="/checkout" onClick={isLogin}>
                         <Button disabled={!cartItems.length} variant={"secondary"} className={`w-fit absolute top-6 ${isRTL ? "left-4" : "right-4"}`}>{t("go")} {t("to")} {t("checkout")}</Button>
                     </Link>
                 </DrawerHeader>
@@ -166,7 +182,7 @@ export function CartDrawer() {
                         <span>{totalPrice} {t("EGY")}</span>
                     </div>
 
-                    <Link to="/checkout">
+                    <Link to="/checkout" onClick={isLogin}>
                         <Button fullWidth disabled={!cartItems.length}>
                             {t("checkout")}
                         </Button>

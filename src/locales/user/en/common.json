@@ -19,10 +19,15 @@
   "yourAddress": "Your Address",
   "login": "Login",
   "register": "Register",
+  "createAccountContent": "Join our store today",
+  "confirmPassword": "Confirm Password",
+  "userName": "Username",
   "logout": "Logout",
   "email": "Email",
   "password": "Password",
   "forgotPassword": "Forgot Password?",
+  "forgotPassContent": "Enter your email to receive a password reset link.",
+  "resetLink": "Send Reset Link",
   "dontHaveAccount": "Don't have an account?",
   "alreadyHaveAccount": "Already have an account?",
   "createAccount": "Create an account",
@@ -56,5 +61,8 @@
   "checkout": "checkout",
   "close": "Close",
   "quantity": "Quantity",
-  "logoutMessage": "You logout successfly"
+  "logoutMessage": "You logout successfly",
+  "changePassword": "Change Password",
+  "resetPassword": "Reset Password",
+  "createNewReset": "Create a new password."
 }

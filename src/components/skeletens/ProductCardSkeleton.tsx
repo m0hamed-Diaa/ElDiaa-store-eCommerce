@@ -1,62 +1,37 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function ProductCardSkeleton() {
+interface IProps {
+    showButtonDetails?: boolean;
+}
+
+export default function ProductCardSkeleton({ showButtonDetails = true }: IProps) {
     return (
-        <>
-            <Card className="group relative overflow-hidden rounded-2xl border bg-card">
-                <CardContent className="p-5 space-y-4">
+        <Card>
+            <CardContent className="space-y-4">
+                {/* Product */}
+                <Skeleton className="w-full h-56 rounded-lg" />
+                <div className="flex-1 space-y-2">
+                    {/* title */}
+                    <Skeleton className="h-5 w-25" />
+                    {/* rating */}
+                    <Skeleton className="h-4 w-35" />
+                    {/* description */}
+                    <Skeleton className="h-8 w-full" />
+                </div>
 
-                    {/* ===== IMAGE AREA ===== */}
-                    <div className="relative h-56 overflow-hidden rounded-xl bg-muted/40">
+                <div className="flex gap-2">
+                    <Skeleton className="h-4 w-full flex-1" />
+                    <Skeleton className="h-4 w-full flex-1" />
+                    <Skeleton className="h-4 w-full flex-1" />
+                </div>
+                <div className="flex gap-2">
+                    <Skeleton className="h-12 w-full flex-1" />
+                    {showButtonDetails && (<Skeleton className="h-12 w-full flex-1" />)}
+                </div>
 
-                        {/* Shimmer Overlay */}
-                        <div className="absolute inset-0 shimmer" />
-
-                    </div>
-                    {/* ===== TITLE ===== */}
-                    <div className="h-5 w-2/3 rounded-md bg-muted relative overflow-hidden">
-                        <div className="absolute inset-0 shimmer" />
-                    </div>
-
-                    {/* ===== RATING ===== */}
-                    <div className="h-4 w-1/2 rounded-md bg-muted relative overflow-hidden">
-                        <div className="absolute inset-0 shimmer" />
-                    </div>
-
-                    {/* ===== DESCRIPTION ===== */}
-                    <div className="space-y-2">
-                        <div className="h-4 w-full rounded-md bg-muted relative overflow-hidden">
-                            <div className="absolute inset-0 shimmer" />
-                        </div>
-                        <div className="h-4 w-5/6 rounded-md bg-muted relative overflow-hidden">
-                            <div className="absolute inset-0 shimmer" />
-                        </div>
-                    </div>
-
-                    {/* ===== PRICE ===== */}
-                    <div className="flex gap-3">
-                        <div className="h-6 w-20 rounded-md bg-muted relative overflow-hidden">
-                            <div className="absolute inset-0 shimmer" />
-                        </div>
-
-                        <div className="h-6 w-16 rounded-md bg-muted relative overflow-hidden">
-                            <div className="absolute inset-0 shimmer" />
-                        </div>
-                    </div>
-
-                    {/* ===== BUTTONS ===== */}
-                    <div className="flex gap-2 pt-2">
-                        <div className="h-10 flex-1 rounded-xl bg-muted relative overflow-hidden">
-                            <div className="absolute inset-0 shimmer" />
-                        </div>
-
-                        <div className="h-10 flex-1 rounded-xl bg-muted relative overflow-hidden">
-                            <div className="absolute inset-0 shimmer" />
-                        </div>
-                    </div>
-
-                </CardContent>
-            </Card>
-        </>
+                {/* <Skeleton className="h-12 w-full mt-6" /> */}
+            </CardContent>
+        </Card>
     );
 }

@@ -12,61 +12,87 @@ import {
 } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
+import AuthLayout from "./AuthLayout";
+import { useTranslation } from "react-i18next";
+import { useAppSelector } from "@/app/hooks";
+import { selectLang } from "@/app/features/language/languageSlice";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+import { useForgotPasswordMutation } from "@/app/users/authApi";
+import { Navigate } from "react-router-dom";
+import { getAuth } from "@/lib/authCookies";
 
-const schema = z.object({
+const createResetSchema = (isRTL: boolean) => z.object({
     email: z
         .string()
-        .email("Invalid email address"),
-});
-
-type FormValues = z.infer<typeof schema>;
+        .email(`${isRTL ? "عنوان الإيميل غلط" : "Invalid email address"}`)
+})
 
 export default function ForgotPasswordPage() {
+    if (getAuth()?.token) {
+        return <Navigate to="/" replace />;
+    }
+    const { t } = useTranslation("common");
+    const lang = useAppSelector(selectLang);
+    const isRTL = lang === "ar";
+
+    const resetSchema =
+        createResetSchema(isRTL);
+
+    type FormValues =
+        z.infer<typeof resetSchema>;
+
+    const [forgot, { isLoading }] = useForgotPasswordMutation();
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        reset,
+        formState: {
+            errors,
+            isSubmitting,
+        },
     } = useForm<FormValues>({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(resetSchema),
+        defaultValues: {
+            email: ""
+        }
     });
 
-    const onSubmit = async (values: FormValues) => {
+    const onSubmit = async (
+        values: FormValues
+    ) => {
         try {
-            const res = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json",
-                    },
-                    body: JSON.stringify({
-                        email: values.email,
-                    }),
-                }
+            await forgot({
+                email: values.email,
+            }).unwrap();
+
+            reset();
+
+            toast.success(
+                isRTL
+                    ? "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني"
+                    : "Password reset link sent to your email"
             );
 
-            if (!res.ok)
-                throw new Error();
-
-            alert(
-                "Reset password email sent successfully"
-            );
         } catch {
-            alert("Something went wrong");
+            toast.error(
+                (isRTL
+                    ? "فشل إرسال الرابط"
+                    : "Failed to send reset link")
+            );
         }
     };
 
     return (
-        <div className="container flex min-h-screen items-center justify-center">
+        <AuthLayout>
             <Card className="w-full max-w-md">
                 <CardHeader>
                     <CardTitle>
-                        Forgot Password
+                        {t("forgotPassword")}
                     </CardTitle>
 
                     <CardDescription>
-                        Enter your email to receive a password reset link.
+                        {t("forgotPassContent")}
                     </CardDescription>
                 </CardHeader>
 
@@ -77,36 +103,48 @@ export default function ForgotPasswordPage() {
                         )}
                         className="space-y-4"
                     >
-                        <div>
-                            <Input
-                                placeholder="Email"
-                                {...register(
-                                    "email"
-                                )}
-                            />
-
-                            {errors.email && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {
-                                        errors
-                                            .email
-                                            .message
-                                    }
-                                </p>
+                        <Input
+                            type="email"
+                            placeholder={isRTL ? "ايميلك..." : "Your email..."}
+                            disabled={isLoading || isSubmitting}
+                            {...register(
+                                "email"
                             )}
-                        </div>
+                        />
+
+                        {errors.email && (
+                            <p className="mt-1 text-sm text-red-500">
+                                {
+                                    errors
+                                        .email
+                                        .message
+                                }
+                            </p>
+                        )}
 
                         <Button
                             className="w-full"
                             disabled={
-                                isSubmitting
+                                isLoading
                             }
                         >
-                            Send Reset Link
+                            {isLoading ? <>
+
+                                {`${isRTL ? "جار التحميل..." : "Loading ..."}`}
+                                <Spinner />
+                            </>
+                                :
+
+                                <>
+                                    {t("resetLink")}
+                                </>
+                            }
                         </Button>
+
                     </form>
+
                 </CardContent>
             </Card>
-        </div>
+        </AuthLayout>
     );
 }

@@ -1,0 +1,15 @@
+{
+  "checkout": "الدفع",
+  "shippingAdd": "عنوان الشحن",
+  "paymentMethod": "طريقة الدفع",
+  "cashOnDelivery": "الدفع عند الاستلام",
+  "creditCard": "كريدت كارد",
+  "payPal": "بايبال",
+  "orderSummary": "ملخص الأوردر",
+  "subtotal": "الإجمالي الفرعي",
+  "shipping": "الشحن",
+  "tax": "ضريبة",
+  "total": "المجموع",
+  "apply": "قدم",
+  "placeOrder": "اطلب الطلبية"
+}

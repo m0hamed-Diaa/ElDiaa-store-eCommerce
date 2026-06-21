@@ -13,11 +13,13 @@ import { useTranslation } from "react-i18next";
 import IframeMap from "@/components/IframeMap";
 import { Link } from "react-router-dom";
 import diaaLogo from "@/assets/diaa-logo.png";
+import { usePageTitle } from "@/components/usePageTitle";
 
 const AboutPage = () => {
   const lang = useSelector(selectLang);
   const isRTL = lang === "ar";
   const { t } = useTranslation("about");
+  usePageTitle("الأعدادات | متجر الضياء للإلكترونيات", "Settings | El-diaa Store For Electronics")
 
   return (
     <div

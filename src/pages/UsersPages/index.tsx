@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { formatTimeAgo } from "@/utils";
 import { useGetProductsQuery } from "@/app/products/user/productsApi";
 import { useGetCategoriesQuery } from "@/app/categories/user/categoryApi";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HomePage() {
   const lang = useAppSelector(selectLang);
@@ -52,56 +53,34 @@ export default function HomePage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingHero) {
     return (
       <>
-        <div className="flex items-center gap-5 my-10 px-7 md:px-10">
-          <div className="relative h-90 w-full md:flex-1 overflow-hidden rounded-xl bg-muted/40">
-            <div className="absolute inset-0 shimmer" />
-          </div>
-          <div className="relative h-90 hidden md:flex md:flex-1 overflow-hidden rounded-xl bg-muted/40">
-            <div className="absolute inset-0 shimmer" />
-          </div>
+        <Skeleton className="h-12 w-[90%] mx-auto md:w-[50%] flex justify-center mt-4 md:mx-6 md:justify-start" />
+        <div className="flex items-center md:gap-5 p-6">
+          <Skeleton className="h-90 w-full flex-1 " />
+          <Skeleton className="h-90 w-0 md:w-full md:flex-1" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-7 md:px-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-7 md:px-10">
           {Array.from({ length: 6 }).map((_, i) => (
             <ProductCardSkeleton key={i} />))}
         </div>
       </>
     );
   }
-  if (isLoadingHero) {
-    return (
-      <>
-        <div className="flex items-center gap-5 my-10 px-7 md:px-10">
-          <div className="relative h-90 w-full md:flex-1 overflow-hidden rounded-xl bg-muted/40">
-            <div className="absolute inset-0 shimmer" />
-          </div>
-          <div className="relative h-90 hidden md:flex md:flex-1 overflow-hidden rounded-xl bg-muted/40">
-            <div className="absolute inset-0 shimmer" />
-          </div>
-        </div>
-      </>
-    );
+  if (error || heroError) {
+    return <div className="text-red-500 min-h-[90vh] flex items-center justify-center">{t("errorHandling")} {search && (`"${search}"`)}</div>;
   }
-  if (error) {
-    return <div className="text-red-500 min-h-[90vh] flex items-center justify-center">{t("errorHandling")} {search}</div>;
-  }
-  if (heroError) {
-    return <div className="text-red-500 min-h-[90vh] flex items-center justify-center">{t("errorHandling")}</div>;
-  }
-
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-
       <div className={`flex justify-center mt-2 md:mx-6 md:justify-start`}>
         <Input
           placeholder={t("inputSearch")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="
-            w-[95%]
+            w-[90%]
             md:w-[50%]
             focus:h-12
             rounded-xl
@@ -241,7 +220,7 @@ export default function HomePage() {
         </div>
         {/* latest Products */}
         {data?.data?.length ?
-          <div className="mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-10 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
             {data?.data?.map((p: IProduct) => (
               <ProductCard p={p} key={p.id} showActions={false} />
             ))}

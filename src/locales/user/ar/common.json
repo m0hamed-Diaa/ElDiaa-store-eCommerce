@@ -20,12 +20,17 @@
   "yourAddress": "عنوانك",
   "login": "تسجيل الدخول",
   "register": "إنشاء حساب",
+  "createAccountContent": "انضم لمحلنا النهاردة",
+  "confirmPassword": "أكد كلمة المرور",
+  "userName": "الأسم",
   "logout": "تسجيل الخروج",
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",
   "forgotPassword": "نسيت كلمة المرور؟",
+  "forgotPassContent": "اكتب ايميلك عشان تستلم رابط",
+  "resetLink": "إعادة تعيين كلمة السر",
   "dontHaveAccount": "ليس لديك حساب؟",
-  "alreadyHaveAccount": "هل لديك حساب بالفعل?",
+  "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
   "createAccount": "إنشاء حساب",
   "rememberMe": "ذكرني",
   "footer": "متجر الضياء. جميع الحقوق محفوظة. © 2026",
@@ -56,5 +61,8 @@
   "checkout": "الدفع",
   "close": "اقفل",
   "quantity": "الكمية",
-  "logoutMessage": "تم تسجيل الخروج بنجاح"
+  "logoutMessage": "تم تسجيل الخروج بنجاح",
+  "changePassword": "تغيير كلمة المرور",
+  "resetPassword": "إعادة تاكيد كلمة المرور",
+  "createNewReset": "اعمل كلمة مرور جديدة."
 }

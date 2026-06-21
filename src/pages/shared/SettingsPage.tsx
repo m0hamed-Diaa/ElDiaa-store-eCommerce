@@ -4,7 +4,6 @@ import {
     Palette,
     Globe,
     Package,
-    LogOut,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,10 +21,51 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import DarkModeToggle from "@/components/ui/DarkModeToggle";
 import LanguageToggle from "@/components/ui/LanguageToggle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { getAuth, removeAuth } from "@/lib/authCookies";
+import { useGetCustomerByUserQuery, useGetProfileQuery } from "@/app/users/profileApi";
+import { GoPerson, GoSignOut } from "react-icons/go";
+import { FaExchangeAlt } from "react-icons/fa";
+import { toast } from "sonner";
+import { useState } from "react";
+import { DialogDemo } from "@/components/shared/DialogDemo";
+import { useAppSelector } from "@/app/hooks";
+import { selectLang } from "@/app/features/language/languageSlice";
+import SettingsSkeleton from "@/components/skeletens/SettingsSkeleton";
 
 export default function SettingsPage() {
+    const navigate = useNavigate();
     const { t } = useTranslation("settings");
+    const lang = useAppSelector(selectLang);
+    const isRTL = lang === "ar";
+    const userLoggedIn = getAuth();
+    const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useGetProfileQuery(userLoggedIn?.userId);
+    const { data: customer } = useGetCustomerByUserQuery(userLoggedIn?.userId);
+    const isAdmin = profileData?.accountType === "admin";
+    const settingsPath = isAdmin ? "/admin/settings/profile" : "/settings/profile"
+    const changePasswordPath = isAdmin ? "/admin/settings/profile/change-password" : "/settings/profile/change-password"
+
+    const [islogout, setLogout] = useState(false);
+
+    const handleLogout = () => {
+        setLogout(true);
+        removeAuth();
+        localStorage.removeItem("rememberedEmail");
+        toast.success(t("logoutMessage"));
+        navigate("/", { replace: true })
+    }
+
+    if (isProfileLoading) {
+        return (
+            <div className="p-4">
+                <SettingsSkeleton />
+            </div>
+        )
+    }
+
+    if (isProfileError) {
+        return <div className="text-red-500 min-h-[90vh] flex items-center justify-center">{t("errorHandling")} {t("signInFirst")}</div>;
+    }
 
     return (
         <div className="min-h-screen bg-background text-foreground">
@@ -49,23 +89,23 @@ export default function SettingsPage() {
                         <CardContent className="p-4">
                             <div className="mb-6 flex flex-col items-center text-center">
                                 <Avatar className="h-20 w-20">
-                                    <AvatarImage src="https://github.com/shadcn.png" />
-                                    <AvatarFallback>MD</AvatarFallback>
+                                    <AvatarImage src={customer?.avater?.formats?.small?.url || "https://github.com/shadcn.png"} />
+                                    <AvatarFallback>{profileData?.username?.charAt(0).toUpperCase() || <GoPerson size={"30"} />}</AvatarFallback>
                                 </Avatar>
 
                                 <h2 className="mt-4 text-lg font-semibold">
-                                    Mohamed Diaa
+                                    {profileData?.username}
                                 </h2>
 
                                 <p className="text-sm text-muted-foreground">
-                                    {t("user")}
+                                    {isAdmin ? t("admin") : t("user")}
                                 </p>
                             </div>
 
                             <Separator className="mb-4" />
 
                             <nav className="flex flex-col gap-2">
-                                <Link to="/settings/profile">
+                                <Link to={settingsPath}>
                                     <Button
                                         variant="ghost"
                                         className="w-full justify-start gap-3 rounded-xl"
@@ -116,13 +156,9 @@ export default function SettingsPage() {
                             </nav>
 
                             <Separator className="my-4" />
-                            <Button
-                                variant="destructive"
-                                className="w-full rounded-xl"
-                            >
-                                {t("logout")}
-                                <LogOut size={18} />
-                            </Button>
+                            <DialogDemo loading={islogout} submitButton={t("logout")} onClick={() => handleLogout()} title={`${isRTL ? "هل انت متاكد من تسجيل الخروج!" : "Are you sure you logout!"}`} description={`${isRTL ? "لو سجلت الخروج، ستحتاج لتسجيل الدخول مرة اخرى" : "If you logout, you'll need to log in again."}`} children={<Button fullWidth variant={"destructive"}>
+                                {t("logout")} <GoSignOut />
+                            </Button>} />
 
                         </CardContent>
                     </Card>
@@ -132,12 +168,15 @@ export default function SettingsPage() {
 
                         {/* Profile */}
                         <Card className="rounded-2xl border-border/50">
-                            <CardHeader>
-                                <CardTitle> {t("profileContent")} </CardTitle>
+                            <CardHeader className="flex items-center justify-between">
+                                <div>
+                                    <CardTitle> {t("profileContent")} </CardTitle>
 
-                                <CardDescription>
-                                    {t("userProfileContent")}
-                                </CardDescription>
+                                    <CardDescription>
+                                        {t("userProfileContent")}
+                                    </CardDescription>
+                                </div>
+                                <Link to={settingsPath}><Button variant={"secondary"}>{t("refresh")}</Button></Link>
                             </CardHeader>
 
                             <CardContent className="grid gap-4 md:grid-cols-2">
@@ -148,8 +187,8 @@ export default function SettingsPage() {
                                     </label>
 
                                     <input
-                                        defaultValue="Mohamed Diaa"
-                                        className="w-full rounded-xl border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-primary"
+                                        defaultValue={profileData?.username}
+                                        className="w-full rounded-xl border bg-background px-4 py-3 pointer-events-none"
                                     />
                                 </div>
 
@@ -159,8 +198,8 @@ export default function SettingsPage() {
                                     </label>
 
                                     <input
-                                        defaultValue="mohamed@example.com"
-                                        className="w-full rounded-xl border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-primary"
+                                        defaultValue={profileData?.email}
+                                        className="w-full rounded-xl border bg-background px-4 py-3 pointer-events-none"
                                     />
                                 </div>
 
@@ -211,7 +250,7 @@ export default function SettingsPage() {
                         </Card>
 
                         {/* Orders */}
-                        <Card className="rounded-2xl border-border/50" id="orders">
+                        {!isAdmin && (<Card className="rounded-2xl border-border/50" id="orders">
                             <CardHeader>
                                 <CardTitle>{t("recentOrders")}</CardTitle>
 
@@ -255,7 +294,7 @@ export default function SettingsPage() {
                                 </div>
 
                             </CardContent>
-                        </Card>
+                        </Card>)}
 
                         {/* Security */}
                         <Card className="rounded-2xl border-border/50" id="security">
@@ -280,9 +319,11 @@ export default function SettingsPage() {
                                         </p>
                                     </div>
 
-                                    <Button variant="outline">
-                                        {t("update")}
-                                    </Button>
+                                    <Link to={changePasswordPath}>
+                                        <Button variant={"secondary"} fullWidth className="text-white text-sm mb-2">
+                                            {t("changePassword")} <FaExchangeAlt />
+                                        </Button>
+                                    </Link>
                                 </div>
                             </CardContent>
                         </Card>

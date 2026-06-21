@@ -6,20 +6,23 @@ import {
     SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
+import { usePageTitle } from "@/components/usePageTitle";
+
 
 export default function AdminLayout() {
+    usePageTitle("الأدمن | متجر الضياء للإلكترونيات", "Admin | El-diaa Store For Electronics")
+
 
     return (
         <SidebarProvider>
-
             <AdminSidebar />
             <SidebarInset className="overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
                 {/* HEADER */}
-                <header className="flex h-16 items-center gap-4 border-b px-6">
+                <header className="flex h-16 items-center gap-4 border-b px-2">
                     <SidebarTrigger />
                 </header>
                 {/* PAGE CONTENT */}
-                <main className="min-h-screen p-2 md:p-6">
+                <main className="min-h-screen md:p-5">
                     <Outlet />
                 </main>
                 {/* FOOTER */}

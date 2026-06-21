@@ -28,24 +28,16 @@ export const authApiSlice = createApi({
         }),
 
         forgotPassword: builder.mutation({
-            query: (email) => ({
+            query: (body) => ({
                 url: "/auth/forgot-password",
                 method: "POST",
-                body: { email },
+                body,
             }),
         }),
 
         resetPassword: builder.mutation({
             query: (body) => ({
                 url: "/auth/reset-password",
-                method: "POST",
-                body,
-            }),
-        }),
-
-        changePassword: builder.mutation({
-            query: (body) => ({
-                url: "/auth/change-password",
                 method: "POST",
                 body,
             }),
@@ -58,5 +50,4 @@ export const {
     useRegisterMutation,
     useForgotPasswordMutation,
     useResetPasswordMutation,
-    useChangePasswordMutation,
 } = authApiSlice;

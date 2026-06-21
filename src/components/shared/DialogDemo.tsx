@@ -21,17 +21,20 @@ interface IProps {
     title: string;
     description?: string;
     submitButton: string;
-    onClick: () => void;
+    onClick?: () => void;
+    formId?: string;
     loading: boolean;
+    open?: boolean;
+    setOpen?: (values: boolean) => void;
 }
 
-export function DialogDemo({ children, title, description, body, submitButton, onClick, loading = false }: IProps) {
+export function DialogDemo({ children, title, description, body, submitButton, onClick, formId, loading = false, open, setOpen }: IProps) {
     const lang = useAppSelector(selectLang);
     const isRTL = lang === "ar";
     const { t } = useTranslation("common");
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <form>
                 <DialogTrigger asChild>
                     {children}
@@ -51,7 +54,7 @@ export function DialogDemo({ children, title, description, body, submitButton, o
                         <DialogClose asChild>
                             <Button variant="outline">{t("close")}</Button>
                         </DialogClose>
-                        <Button type="submit" onClick={onClick} loading={loading}>{submitButton} {loading ? <Spinner /> : ""}</Button>
+                        <Button type="submit" onClick={onClick} form={formId} loading={loading}>{submitButton} {loading ? <Spinner /> : ""}</Button>
                     </DialogFooter>
                 </DialogContent>
             </form>

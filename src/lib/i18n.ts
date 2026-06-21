@@ -8,6 +8,7 @@ import arContact from "@/locales/user/ar/contact.json";
 import arHome from "@/locales/user/ar/home.json";
 import arProducts from "@/locales/user/ar/products.json";
 import arSettings from "@/locales/user/ar/settings.json";
+import arCheckout from "@/locales/user/ar/checkout.json";
 // English files
 import enAbout from "@/locales/user/en/about.json";
 import enCommon from "@/locales/user/en/common.json";
@@ -15,6 +16,7 @@ import enContact from "@/locales/user/en/contact.json";
 import enHome from "@/locales/user/en/home.json";
 import enProducts from "@/locales/user/en/products.json";
 import enSettings from "@/locales/user/en/settings.json";
+import enCheckout from "@/locales/user/en/checkout.json";
 
 // ====================================================================
 // Admin files
@@ -44,6 +46,7 @@ const resources = {
         home: arHome,
         products: arProducts,
         settings: arSettings,
+        checkout: arCheckout,
 
         adminCommon: arAdminCommon,
         adminDashboard: arAdminDashboard,
@@ -59,6 +62,7 @@ const resources = {
         home: enHome,
         products: enProducts,
         settings: enSettings,
+        checkout: enCheckout,
 
         adminCommon: enAdminCommon,
         adminDashboard: enAdminDashboard,

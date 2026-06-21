@@ -1,6 +1,6 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
@@ -27,16 +27,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { toast } from "sonner";
 import { useLoginMutation } from "@/app/users/authApi";
-import { saveAuth } from "@/lib/authCookies";
+import { getAuth, saveAuth } from "@/lib/authCookies";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/app/hooks";
 import { selectLang } from "@/app/features/language/languageSlice";
 import { Spinner } from "@/components/ui/spinner";
+import AuthLayout from "./AuthLayout";
 
 const createLoginSchema = (isRTL: boolean) => z.object({
   identifier: z
     .string()
-    .min(8, `${isRTL ? "يجب أن يكون البريد الإلكتروني أو اسم المستخدم على الأقل 8 أحرف" : "Email or username must be at least 8 characters"}`),
+    .min(8, `${isRTL ? "يجب أن يكون البريد الإلكتروني على الأقل 8 أحرف" : "Email must be at least 8 characters"}`),
 
   password: z
     .string()
@@ -51,10 +52,15 @@ interface LoginPageProps {
 }
 
 export default function LoginPage({ mode }: LoginPageProps) {
-  const navigate = useNavigate();
+  if (getAuth()?.token) {
+    return <Navigate to="/" replace />;
+  }
   const { t } = useTranslation("common");
   const lang = useAppSelector(selectLang);
   const isRTL = lang === "ar";
+  const navigate = useNavigate();
+  const location = useLocation();
+
 
   const [showPassword, setShowPassword] =
     useState(false);
@@ -81,7 +87,6 @@ export default function LoginPage({ mode }: LoginPageProps) {
       rememberMe: !!rememberedEmail,
     },
   });
-  // http://localhost:1337/api/customers?filters[user][id][$eq]=1&populate=*
   const onSubmit = async (
     values: LoginValues
   ) => {
@@ -110,7 +115,15 @@ export default function LoginPage({ mode }: LoginPageProps) {
       const redirectPath =
         res.user.accountType === "admin"
           ? "/admin"
-          : "/";
+          : sessionStorage.getItem(
+            "redirectAfterAuth"
+          ) || "/";
+
+      if (res.user.accountType !== "admin") {
+        sessionStorage.removeItem(
+          "redirectAfterAuth"
+        );
+      }
 
       navigate(redirectPath, {
         replace: true,
@@ -118,13 +131,13 @@ export default function LoginPage({ mode }: LoginPageProps) {
 
     } catch {
       toast.error(
-        `${isRTL ? "البريد الإلكتروني أو كلمة المرور غير صحيحة" : "Invalid email or password"}`
+        (isRTL ? "البريد الإلكتروني أو كلمة المرور غير صحيحة" : "Invalid email or password")
       );
     }
   };
 
   return (
-    <div className="container flex min-h-screen items-center justify-center py-10">
+    <AuthLayout>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>
@@ -161,6 +174,7 @@ export default function LoginPage({ mode }: LoginPageProps) {
 
                   <Input
                     {...field}
+                    placeholder={`${isRTL ? "ادخل إيميلك..." : "Enter you email..."}`}
                   />
 
                   {fieldState.error && (
@@ -193,6 +207,7 @@ export default function LoginPage({ mode }: LoginPageProps) {
                   <div className="relative">
                     <Input
                       {...field}
+                      placeholder={`${isRTL ? "ادخل رقمك السري..." : "Enter your password..."}`}
                       type={
                         showPassword
                           ? "text"
@@ -278,6 +293,9 @@ export default function LoginPage({ mode }: LoginPageProps) {
                 <p>{t("dontHaveAccount")}</p>
                 <Link
                   to="/register"
+                  state={{
+                    redirect: location.pathname,
+                  }}
                   className="text-primary"
                 >
                   {t("createAccount")}
@@ -287,6 +305,6 @@ export default function LoginPage({ mode }: LoginPageProps) {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </AuthLayout>
   );
 }
