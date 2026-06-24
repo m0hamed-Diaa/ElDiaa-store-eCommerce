@@ -11,7 +11,7 @@ import { Mail, User, Camera } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getAuth } from "@/lib/authCookies";
 import { useGetCustomerByUserQuery, useGetProfileQuery, useUpdateCustomerMutation, useUpdateProfileMutation } from "@/app/users/profileApi";
-import UserProfileSkeleton from "@/components/skeletens/ProfileSkeleton";
+import UserProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GoPerson } from "react-icons/go";
 import { MdBrowserUpdated } from "react-icons/md";
@@ -167,7 +167,6 @@ export default function ProfilePage() {
           : "Profile image updated"
       );
     } catch (error) {
-      console.log(error)
       toast.error(
         isRTL
           ? "فشل رفع الصورة"

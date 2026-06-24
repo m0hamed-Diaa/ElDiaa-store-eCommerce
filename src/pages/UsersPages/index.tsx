@@ -8,7 +8,7 @@ import { selectInternetStatus } from "@/app/features/Internet/internetSlice";
 import { selectLang } from "@/app/features/language/languageSlice";
 import { useAppSelector } from "@/app/hooks";
 import ProductCard from "@/components/ProductCard";
-import ProductCardSkeleton from "@/components/skeletens/ProductCardSkeleton";
+import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeleton";
 import type { IHeroSlide, IProduct, StrapiCategory } from "@/interfaces";
 import { Link } from "react-router-dom";
 import { useGetHeroSlidesQuery } from "@/app/hero-slides/user/heroSlice";
@@ -61,7 +61,7 @@ export default function HomePage() {
           <Skeleton className="h-90 w-full flex-1 " />
           <Skeleton className="h-90 w-0 md:w-full md:flex-1" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-7 md:px-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-7 md:px-10 mb-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <ProductCardSkeleton key={i} />))}
         </div>

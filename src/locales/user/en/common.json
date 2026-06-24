@@ -64,5 +64,6 @@
   "logoutMessage": "You logout successfly",
   "changePassword": "Change Password",
   "resetPassword": "Reset Password",
-  "createNewReset": "Create a new password."
+  "createNewReset": "Create a new password.",
+  "browserProducts": ", Browser Products."
 }

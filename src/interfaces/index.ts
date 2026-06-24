@@ -78,9 +78,9 @@ export interface IProduct {
   price: number;
   stock: number;
 
-  rating: number;
-  reviewCount: number;
-  discount: number;
+  rating?: number | undefined;
+  reviewCount?: number | undefined;
+  discount?: number | undefined;
 
   locale: string;
 

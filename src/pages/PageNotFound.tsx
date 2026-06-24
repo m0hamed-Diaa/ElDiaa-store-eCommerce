@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { useTranslation } from "react-i18next";
 import diaaLogo from "@/assets/diaa-logo.png";
@@ -6,10 +6,14 @@ import { FaHome } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { selectLang } from "@/app/features/language/languageSlice";
 
-interface IProps {
-  path: string;
-}
-const PageNotFound = ({ path }: IProps) => {
+const PageNotFound = () => {
+  const location = useLocation();
+
+  const homePath =
+    location.pathname.startsWith("/admin")
+      ? "/admin"
+      : "/";
+
   const { t } = useTranslation("common");
   const lang = useSelector(selectLang);
   const isRTL = lang === "ar";
@@ -53,7 +57,7 @@ const PageNotFound = ({ path }: IProps) => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4 w-full sm:w-auto">
-              <Link to={`${path}`} className="w-full sm:w-fit">
+              <Link to={homePath} className="w-full sm:w-fit">
                 <Button>
                   {isRTL ?
                     <>

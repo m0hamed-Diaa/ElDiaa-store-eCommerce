@@ -85,7 +85,7 @@ export default function AdminDashboard() {
                   {t("dashboardTitle")}
                 </p>
               </div>
-              <UserProfileIcon />
+              <UserProfileIcon allowedRole="admin" />
             </div>
           </header>
 

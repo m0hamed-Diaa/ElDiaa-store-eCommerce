@@ -4,6 +4,9 @@ import { Input } from '../ui/input'
 import { Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import SelectComponent from './SelectSorting'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAppSelector } from "@/app/hooks";
+import type { RootState } from "@/app/store";
 
 interface IProps {
     search: string;
@@ -12,10 +15,16 @@ interface IProps {
     setSort: (value: "asc" | "desc") => void;
     dataLength?: number;
     translationKey: string;
+    showLang?: boolean;
+    Lang?: "ar" | "en";
+    setLang?: (value: "ar" | "en") => void;
 }
 
-const FilteringComponent = ({ search, setSearch, sort, setSort, dataLength, translationKey }: IProps) => {
+const FilteringComponent = ({ search, setSearch, sort, setSort, dataLength, translationKey, showLang = false, Lang, setLang }: IProps) => {
     const { t } = useTranslation(translationKey);
+    const lang = useAppSelector((state: RootState) => state.language.lang);
+    const isRTL = lang === "ar";
+
     return (
         <Card className="rounded-2xl">
             <CardHeader>
@@ -46,6 +55,25 @@ const FilteringComponent = ({ search, setSearch, sort, setSort, dataLength, tran
 
                     {/* Sort */}
                     <SelectComponent disabled={dataLength} sort={sort} onChangeSort={setSort} />
+
+                    {/* Select Language */}
+                    {showLang && (
+                        <Select value={Lang}
+                            onValueChange={(value: "ar" | "en") =>
+                                setLang?.(value)
+                            }>
+                            <SelectTrigger className="w-full md:w-auto">
+                                <SelectValue placeholder={`${isRTL ? "اللغة" : "Langauge"}`} />
+                            </SelectTrigger>
+                            <SelectContent className="bg-primary">
+                                <SelectGroup>
+                                    <SelectLabel>{isRTL ? "اختر اللغة" : "Select language"}</SelectLabel>
+                                    <SelectItem value="desc">{isRTL ? "انجليزى" : "English"}</SelectItem>
+                                    <SelectItem value="asc">{isRTL ? "عربى" : "Arabic"}</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    )}
                 </div>
             </CardContent>
         </Card>

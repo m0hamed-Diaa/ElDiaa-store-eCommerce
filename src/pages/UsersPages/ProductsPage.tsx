@@ -5,7 +5,7 @@ import { useAppSelector } from "@/app/hooks";
 import type { RootState } from "@/app/store";
 import ProductCard from "@/components/ProductCard";
 import type { IProduct } from "@/interfaces";
-import ProductCardSkeleton from "@/components/skeletens/ProductCardSkeleton";
+import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeleton";
 import { useSearchParams } from "react-router-dom";
 import PaginationDemo from "@/components/shared/PaginationDemo";
 import { useGetProductsQuery } from "@/app/products/user/productsApi";

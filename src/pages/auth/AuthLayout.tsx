@@ -40,6 +40,7 @@ export default function AuthLayout({
           mx-auto
           flex
           h-16
+          px-4
           items-center
           justify-between
         "

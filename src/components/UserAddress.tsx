@@ -213,7 +213,6 @@ const UserAddress = ({ mode }: IProps) => {
 
 
         } catch (error: any) {
-            console.log(error?.data);
             toast.error(
                 customer?.id
                     ? `${isRTL ? "فشل في تحديث العنوان الشخصى" : "Failed to update Personal Address"}`
@@ -221,6 +220,7 @@ const UserAddress = ({ mode }: IProps) => {
             );
         }
     };
+    
     if (isCustomerLoading || isProfileLoading) {
         return (
             <div className="p-4">

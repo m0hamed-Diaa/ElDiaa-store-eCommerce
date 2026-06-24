@@ -11,7 +11,6 @@ const loadFromLocalStorage = (): number[] => {
 
         return data ? JSON.parse(data) : [];
     } catch (error) {
-        console.log(error)
         return [];
     }
 };

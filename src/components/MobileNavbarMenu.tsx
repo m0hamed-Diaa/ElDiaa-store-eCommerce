@@ -24,6 +24,7 @@ import { openCartDrawer } from "@/app/features/uiSlice";
 import { getAuth } from "@/lib/authCookies";
 import { useGetProfileQuery } from "@/app/users/profileApi";
 import UserProfileIcon from "./UserProfileIcon";
+import { toast } from "sonner";
 
 const MobileNavbarMenu = () => {
     const [open, setOpen] = useState(false);
@@ -43,7 +44,7 @@ const MobileNavbarMenu = () => {
     return (
         <div>
             <div className="flex items-center gap-3 md:hidden">
-                <UserProfileIcon />
+                <UserProfileIcon allowedRole="user" />
 
                 {/* Cart */}
                 <Button
@@ -93,7 +94,7 @@ const MobileNavbarMenu = () => {
                             <Link
                                 to="/"
                                 onClick={closeSheet}
-                                className="flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all hover:bg-accent"
+                                className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("home")}
                                 <ChevronRight size={18} />
@@ -102,7 +103,7 @@ const MobileNavbarMenu = () => {
                             <Link
                                 to="/products"
                                 onClick={closeSheet}
-                                className="flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all hover:bg-accent"
+                                className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("products")}
                                 <ChevronRight size={18} />
@@ -111,7 +112,7 @@ const MobileNavbarMenu = () => {
                             <Link
                                 to="/about"
                                 onClick={closeSheet}
-                                className="flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all hover:bg-accent"
+                                className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("about")}
                                 <ChevronRight size={18} />
@@ -120,7 +121,7 @@ const MobileNavbarMenu = () => {
                             <Link
                                 to="/contact"
                                 onClick={closeSheet}
-                                className="flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all hover:bg-accent"
+                                className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("contact")}
                                 <ChevronRight size={18} />
@@ -128,7 +129,7 @@ const MobileNavbarMenu = () => {
                             <Link
                                 to="/settings"
                                 onClick={closeSheet}
-                                className="flex items-center justify-between rounded-xl px-4 py-3 text-base font-medium transition-all hover:bg-accent"
+                                className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("settings")}
                                 <ChevronRight size={18} />
@@ -136,7 +137,7 @@ const MobileNavbarMenu = () => {
                         </nav>
 
                         {/* Categories */}
-                        <div className="mt-8 border-t border-border/50 pt-6 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden border h-58">
+                        <div className={`mt-8 border-t border-border/50 pt-6 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden border ${cartItems.length ? "h-45" : "h-40"}`}>
 
                             <p className="mb-4 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                 {t("category")}
@@ -175,8 +176,12 @@ const MobileNavbarMenu = () => {
                         </div>
                         {/* Bottom CTA */}
                         <div className="absolute bottom-2 left-4 right-4">
-                            <Button disabled={!cartItems.length} className="w-full text-base font-semibold" onClick={((e) => {
+                            <Button className="w-full text-base font-semibold" onClick={((e) => {
                                 e.currentTarget.blur();
+                                if (cartItems.length === 0) {
+                                    toast.info(t("noProducts") + " " + t("inCart") + t("browserProducts"));
+                                    return;
+                                }
                                 dispatch(openCartDrawer());
                                 closeSheet();
                             })}>

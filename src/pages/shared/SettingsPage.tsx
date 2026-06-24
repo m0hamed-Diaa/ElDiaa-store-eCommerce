@@ -31,7 +31,7 @@ import { useState } from "react";
 import { DialogDemo } from "@/components/shared/DialogDemo";
 import { useAppSelector } from "@/app/hooks";
 import { selectLang } from "@/app/features/language/languageSlice";
-import SettingsSkeleton from "@/components/skeletens/SettingsSkeleton";
+import SettingsSkeleton from "@/components/skeletons/SettingsSkeleton";
 
 export default function SettingsPage() {
     const navigate = useNavigate();

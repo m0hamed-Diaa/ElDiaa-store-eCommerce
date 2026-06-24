@@ -31,6 +31,7 @@ import RegisterPage from "@/pages/auth/Register";
 import ResetPasswordPage from "@/pages/auth/ResetPassword";
 import ForgotPasswordPage from "@/pages/auth/ForgotPassword";
 import ChangePasswordPage from "@/pages/UsersPages/ChangePasswordPage";
+import CreateProduct from "@/pages/Admin/CreateProduct";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -112,6 +113,12 @@ const router = createBrowserRouter(
             }
           />
           <Route
+            path="products/create"
+            element={
+              <CreateProduct />
+            }
+          />
+          <Route
             path="categories"
             element={
               <AdminCategories />
@@ -188,7 +195,7 @@ const router = createBrowserRouter(
       />
 
       {/* Page Not Found */}
-      <Route path="*" element={<PageNotFound path={"/"} />} />
+      <Route path="*" element={<PageNotFound />} />
     </>
   )
 );

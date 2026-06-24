@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { Spinner } from "../ui/spinner";
 
 interface IProps {
-    children: ReactNode;
+    children?: ReactNode;
     body?: ReactNode;
     title: string;
     description?: string;
@@ -39,7 +39,7 @@ export function DialogDemo({ children, title, description, body, submitButton, o
                 <DialogTrigger asChild>
                     {children}
                 </DialogTrigger>
-                <DialogContent className={`sm:max-w-sm bg-background/95 backdrop-blur-xl ${isRTL
+                <DialogContent className={`max-w-sm overflow-y-auto bg-background/95 backdrop-blur-xl ${isRTL
                     ? "[&>button]:left-4 [&>button]:right-auto"
                     : "[&>button]:right-4 [&>button]:left-auto"
                     }`}>

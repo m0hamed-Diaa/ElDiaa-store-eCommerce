@@ -30,7 +30,7 @@ import UserAddress from "@/components/UserAddress";
 import { useAppSelector } from "@/app/hooks";
 import { selectLang } from "@/app/features/language/languageSlice";
 import { useGetCustomerByUserQuery } from "@/app/users/profileApi";
-import CheckoutSkeleton from "@/components/skeletens/CheckoutSkeleton";
+import CheckoutSkeleton from "@/components/skeletons/CheckoutSkeleton";
 import { getAuth } from "@/lib/authCookies";
 import { usePageTitle } from "@/components/usePageTitle";
 

@@ -64,5 +64,6 @@
   "logoutMessage": "تم تسجيل الخروج بنجاح",
   "changePassword": "تغيير كلمة المرور",
   "resetPassword": "إعادة تاكيد كلمة المرور",
-  "createNewReset": "اعمل كلمة مرور جديدة."
+  "createNewReset": "اعمل كلمة مرور جديدة.",
+  "browserProducts": "، تصفح المنتجات."
 }

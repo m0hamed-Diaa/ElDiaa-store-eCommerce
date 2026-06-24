@@ -118,11 +118,11 @@ const Navbar = () => {
                     <LanguageToggle />
                     <div className="flex items-center gap-2">
                         {/* User Profile */}
-                        <UserProfileIcon />
+                        <UserProfileIcon allowedRole="user" />
                         {/* Actions */}
                         <div className="relative flex items-center gap-1 cursor-pointer" onClick={() => {
                             if (cartItems.length === 0) {
-                                toast.info(t("noProducts") + " " + t("inCart"));
+                                toast.info(t("noProducts") + " " + t("inCart") + t("browserProducts"));
                                 return;
                             }
                             dispatch(openCartDrawer())

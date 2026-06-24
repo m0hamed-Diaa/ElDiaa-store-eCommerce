@@ -3,6 +3,8 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
+import { useAppSelector } from "@/app/hooks"
+import { selectLang } from "@/app/features/language/languageSlice"
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -63,9 +65,11 @@ function PaginationLink({
 
 function PaginationPrevious({
   className,
-  text = "Previous",
+  text,
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+  const lang = useAppSelector(selectLang);
+  const isRTL = lang === "ar";
   return (
     <PaginationLink
       aria-label="Go to previous page"
@@ -74,16 +78,18 @@ function PaginationPrevious({
       {...props}
     >
       <ChevronLeftIcon data-icon="inline-start" />
-      <span className="hidden sm:block">{text}</span>
+      <span className="hidden sm:block">{isRTL ? "السابق" : "Previous"}</span>
     </PaginationLink>
   )
 }
 
 function PaginationNext({
   className,
-  text = "Next",
+  text,
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+  const lang = useAppSelector(selectLang);
+  const isRTL = lang === "ar";
   return (
     <PaginationLink
       aria-label="Go to next page"
@@ -91,7 +97,7 @@ function PaginationNext({
       className={cn("pr-1.5!", className)}
       {...props}
     >
-      <span className="hidden sm:block">{text}</span>
+      <span className="hidden sm:block">{isRTL ? "التالى" : "Next"}</span>
       <ChevronRightIcon data-icon="inline-end" />
     </PaginationLink>
   )

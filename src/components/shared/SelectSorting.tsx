@@ -20,7 +20,7 @@ const SelectComponent = ({ sort, onChangeSort, disabled }: IProps) => {
             <SelectTrigger className="w-full md:w-auto disabled:pointer-event-none">
                 <SelectValue placeholder={`${isRTL ? "تصفية" : "Filtering"}`} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-primary">
                 <SelectGroup>
                     <SelectLabel>{isRTL ? "ترتيب" : "Sort By"}</SelectLabel>
                     <SelectItem value="desc">{isRTL ? "الأحدث" : "Newest"}</SelectItem>

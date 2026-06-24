@@ -17,24 +17,31 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { Skeleton } from "./ui/skeleton";
 
+interface IUserProps {
+    allowedRole?: "user" | "admin";
+}
 
-const UserProfileIcon = () => {
-    const { t } = useTranslation("common");
+const UserProfileIcon = ({ allowedRole }: IUserProps) => {
     const navigate = useNavigate();
+    const { t } = useTranslation("common");
     const lang = useAppSelector(selectLang);
     const isRTL = lang === "ar";
     // Go to currentPage
     const { saveCurrentPage } =
         useAuthRedirect();
+
     const userLoggedIn = getAuth();
+    // Check if user | admin
+    if (userLoggedIn?.role !== allowedRole) {
+        return null;
+    }
+
     const isAdmin = userLoggedIn?.role === "admin";
     const settingsBasePath = isAdmin ? "/admin/settings" : "/settings";
     const roleLabel = isRTL ?
         isAdmin ? "الأدمن" : "مستخدم"
         : isAdmin ? "Admin" : "User";
-    const isAdminPage =
-        location.pathname.startsWith("/admin");
-    const loginPath = isAdminPage
+    const loginPath = isAdmin
         ? "/admin/login"
         : "/login";
 
@@ -70,7 +77,7 @@ const UserProfileIcon = () => {
                                     {isProfileLoading || isProfileError ? <p>{isRTL ? "تحميل البيانات..." : "Data loading..."}</p> :
                                         <>
                                             <li>
-                                                <p className="text-sm text-muted-foreground">
+                                                <p className="text-sm text-muted-foreground overflow-x-auto p-2 scrollbar-none [&::-webkit-scrollbar]:hidden">
                                                     {profileData?.email}
                                                 </p>
                                             </li>
@@ -127,7 +134,7 @@ const UserProfileIcon = () => {
                                             </Button>
                                         </Link>
                                     </li>
-                                    {!isAdminPage && (<li className="flex items-center">
+                                    {!isAdmin && (<li className="flex items-center">
                                         <p>{t("dontHaveAccount")}</p>
                                         <Link to={registerPath} onClick={saveCurrentPage}>
                                             <Button variant="link" className="w-fit mx-auto text-white">

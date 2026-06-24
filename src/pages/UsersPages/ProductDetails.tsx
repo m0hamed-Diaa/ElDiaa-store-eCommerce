@@ -2,7 +2,7 @@ import { useAppSelector } from "@/app/hooks";
 import { useGetSingleProductQuery } from "@/app/products/user/productsApi";
 import type { RootState } from "@/app/store";
 import ProductCard from "@/components/ProductCard";
-import ProductCardSkeleton from "@/components/skeletens/ProductCardSkeleton";
+import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeleton";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePageTitle } from "@/components/usePageTitle";

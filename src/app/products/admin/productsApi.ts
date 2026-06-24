@@ -2,7 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
     IProduct,
     StrapiResponse,
+    StrapiSingleResponse,
 } from "@/interfaces";
+import { getAuth } from "@/lib/authCookies";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,17 +16,9 @@ export const adminProductsApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: `${API_URL}/api`,
 
-        // const auth = getAuth();
-
         prepareHeaders: (headers) => {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc5OTc5NjUwLCJleHAiOjE3ODI1NzE2NTB9.7WCrqwRC2QwkAPfWViEGM9NuKGtDLczvE0bD30El0ME";
-            // if (auth?.token) {
+            const token = getAuth()?.token;
 
-            //     headers.set(
-            //         "Authorization",
-            //         `Bearer ${token}`
-            //     );
-            // }
             if (token) {
                 headers.set(
                     "Authorization",
@@ -38,7 +32,7 @@ export const adminProductsApi = createApi({
 
     endpoints: (builder) => ({
         /* =========================
-           GET PRODUCTS
+            GET PRODUCTS
         ========================= */
         getProducts: builder.query<
             StrapiResponse<IProduct>,
@@ -62,6 +56,14 @@ export const adminProductsApi = createApi({
 
             providesTags: ["Products"],
         }),
+        // Get Single Product
+        getSingleProduct: builder.query<
+            StrapiSingleResponse<IProduct>,
+            { lang: string; documentId: string }
+        >({
+            query: ({ lang, documentId }) =>
+                `/products/${documentId}?locale=${lang}&populate=*`,
+        }),
 
         /* =========================
            CREATE PRODUCT
@@ -70,12 +72,30 @@ export const adminProductsApi = createApi({
             query: (body) => ({
                 url: "/products",
                 method: "POST",
-                body,
+                body: {
+                    data: body,
+                },
             }),
 
             invalidatesTags: ["Products"],
         }),
-
+        // CREATE PRODUCT TRANSLATION
+        addProductTranslation: builder.mutation({
+            query: ({
+                documentId,
+                locale,
+                title,
+                description,
+                categories,
+                thumbnail
+            }) => ({
+                url: `/products/${documentId}?locale=${locale}`,
+                method: "PUT",
+                body: {
+                    data: { title, description, categories, thumbnail },
+                },
+            }),
+        }),
         /* =========================
            UPDATE PRODUCT
         ========================= */
@@ -83,9 +103,6 @@ export const adminProductsApi = createApi({
             query: ({
                 documentId,
                 body,
-            }: {
-                documentId: string;
-                body: unknown;
             }) => ({
                 url: `/products/${documentId}`,
                 method: "PUT",
@@ -111,7 +128,9 @@ export const adminProductsApi = createApi({
 
 export const {
     useGetProductsQuery,
+    useGetSingleProductQuery,
     useCreateProductMutation,
+    useAddProductTranslationMutation,
     useUpdateProductMutation,
     useDeleteProductMutation,
 } = adminProductsApi;
