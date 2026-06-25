@@ -32,6 +32,7 @@ import ResetPasswordPage from "@/pages/auth/ResetPassword";
 import ForgotPasswordPage from "@/pages/auth/ForgotPassword";
 import ChangePasswordPage from "@/pages/UsersPages/ChangePasswordPage";
 import CreateProduct from "@/pages/Admin/CreateProduct";
+import UpdateProduct from "@/pages/Admin/UpdateProduct";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -116,6 +117,12 @@ const router = createBrowserRouter(
             path="products/create"
             element={
               <CreateProduct />
+            }
+          />
+          <Route
+            path="products/update/:documentId"
+            element={
+              <UpdateProduct />
             }
           />
           <Route

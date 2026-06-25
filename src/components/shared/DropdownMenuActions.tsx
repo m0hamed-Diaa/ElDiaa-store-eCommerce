@@ -4,19 +4,20 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useTranslation } from "react-i18next";
 import { selectLang } from "@/app/features/language/languageSlice";
 import { useAppSelector } from "@/app/hooks";
+import { useNavigate } from "react-router-dom";
 
 interface DropdownMenuActionsProps {
-    id: number | string;
-    deleteAction?: () => void;
-    editAction?: () => void;
+    documentId: string;
+    productLang: string;
 }
 
-const DropdownMenuActions = ({ id, deleteAction, editAction }: DropdownMenuActionsProps) => {
+const DropdownMenuActions = ({ documentId, productLang }: DropdownMenuActionsProps) => {
     const { t } = useTranslation("adminCommon");
     const lang = useAppSelector(selectLang);
+    const navigate = useNavigate();
     const isRTL = lang === "ar";
     return (
-        <DropdownMenu key={id}>
+        <DropdownMenu key={documentId}>
             <DropdownMenuTrigger asChild>
                 <Button
                     size="icon"
@@ -27,12 +28,12 @@ const DropdownMenuActions = ({ id, deleteAction, editAction }: DropdownMenuActio
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="bg-background/95 backdrop-blur-x cursor-pointer">
-                <DropdownMenuItem onClick={editAction} className={`flex items-center justify-${isRTL ? "end" : "start"}`}>
+                <DropdownMenuItem onClick={() => navigate(`/admin/products/update/${documentId}?lang=${productLang}`)} className={`flex items-center justify-${isRTL ? "end" : "start"}`}>
                     <Pencil className="mr-2 h-4 w-4" />
                     {t("edit")}
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={deleteAction} className={`text-destructive flex items-center justify-${isRTL ? "end" : "start"}`}>
+                <DropdownMenuItem className={`text-destructive flex items-center justify-${isRTL ? "end" : "start"}`}>
                     <Trash2 className="mr-2 h-4 w-4" />
                     {t("delete")}
                 </DropdownMenuItem>

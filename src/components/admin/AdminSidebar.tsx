@@ -148,15 +148,18 @@ export function AdminSidebar() {
                                         <AvatarImage src={customerData?.avater?.formats?.small?.url || customerData?.avater?.url} />
                                         <AvatarFallback>{profileData?.username?.charAt(0).toUpperCase() || <GoPerson />}</AvatarFallback>
                                     </Avatar>
-                                    <div className="flex flex-col">
-                                        <h2 className="text-sm font-bold">
-                                            {profileData?.username || "-"}
-                                        </h2>
+                                    {profileData?.username ?
+                                        <div className="flex flex-col">
+                                            <h2 className="text-sm font-bold">
+                                                {profileData?.username || "-"}
+                                            </h2>
 
-                                        <p className="text-xs text-muted-foreground">
-                                            {t("superAdmin")}
-                                        </p>
-                                    </div></>
+                                            <p className="text-xs text-muted-foreground">
+                                                {t("superAdmin")}
+                                            </p>
+                                        </div> : <p>{isRTL ? "جار التحميل..." : "loading"}</p>
+                                    }
+                                </>
                             )}
 
 

@@ -106,7 +106,9 @@ export const adminProductsApi = createApi({
             }) => ({
                 url: `/products/${documentId}`,
                 method: "PUT",
-                body,
+                body: {
+                    data: body
+                },
             }),
 
             invalidatesTags: ["Products"],

@@ -16,6 +16,7 @@ import DropdownMenuActions from "@/components/shared/DropdownMenuActions";
 import { formatTimeAgo } from "@/utils";
 import FilteringComponent from "@/components/shared/Filtering";
 import { useNavigate } from "react-router-dom";
+import AdminProductsSkeleton from "@/components/admin/skeletons/AdminProductsSkeleton";
 
 export default function AdminProductsPage() {
   const navigate = useNavigate();
@@ -23,26 +24,23 @@ export default function AdminProductsPage() {
   const lang = useAppSelector(selectLang);
   const isRTL = lang === "ar";
   const [search, setSearch] = useState("");
-  const [Lang, setLang] = useState<"ar" | "en">("en");
+  const [Lang, setLang] = useState<"ar" | "en">("ar");
   const [sort, setSort] = useState<
     "asc" | "desc"
   >("desc");
   const [page, setPage] = useState(1);
-  const { data, error, isLoading } = useGetProductsQuery({ lang, page, sort, search });
-
-
-  // ======================== create Product ===========================
+  const { data, error, isLoading } = useGetProductsQuery({ lang: Lang, page, sort, search });
 
   if (error) {
     return <div className="text-red-500">{t("fetchError")}</div>;
   }
 
   if (isLoading) {
-    return <div className="text-primary">{t("loading")}</div>;
+    return <AdminProductsSkeleton />;
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-3">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold">
@@ -62,7 +60,7 @@ export default function AdminProductsPage() {
       </div>
 
       {/* filtering */}
-      <FilteringComponent showLang Lang={Lang} setLang={setLang} search={search} setSearch={setSearch} sort={sort} setSort={setSort} dataLength={data?.data?.length || 0} translationKey="adminProducts" />
+      <FilteringComponent showLang={true} disabled={isLoading} Lang={Lang} setLang={setLang} search={search} setSearch={setSearch} sort={sort} setSort={setSort} dataLength={data?.data?.length || 0} translationKey="adminProducts" />
       {/* Products Table */}
       <DataTable translationKey="adminProducts"
         tableHeader={<>
@@ -93,6 +91,8 @@ export default function AdminProductsPage() {
               locale =>
                 !existingLocales.includes(locale)
             );
+          const LocaleLang = missingLocales.join(", ") === "ar";
+          const isArabicLang = LocaleLang ? isRTL ? "عربى" : "Arabic" : "";
           return (
             <TableRow key={product.id}>
               <TableCell>{product.id}</TableCell>
@@ -129,8 +129,8 @@ export default function AdminProductsPage() {
                     <div className="flex flex-col">
                       <Badge variant="destructive">
                         {isRTL
-                          ? `الترجمات الناقصة: ${missingLocales.join(", ")}`
-                          : `Missing translations: ${missingLocales.join(", ")}`
+                          ? <>{`الترجمة الناقصة: ${isArabicLang}`} <Button variant={"link"} className="p-0" onClick={() => navigate(`/admin/products/create`)}>اضافة</Button></>
+                          : <>{`Missing translation: ${isArabicLang}`} + <Button variant={"link"} className="p-0" onClick={() => navigate(`/admin/products/create`)}>Create</Button></>
                         }
                       </Badge>
                     </div>
@@ -139,7 +139,7 @@ export default function AdminProductsPage() {
                       ✅ </Badge>}
               </TableCell>
               <TableCell className="text-right">
-                <DropdownMenuActions id={product.id} />
+                <DropdownMenuActions documentId={product.documentId} productLang={product.locale} />
               </TableCell>
             </TableRow>
           )

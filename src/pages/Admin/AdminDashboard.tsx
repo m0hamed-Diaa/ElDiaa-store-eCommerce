@@ -212,7 +212,7 @@ export default function AdminDashboard() {
                         {order.status === 'completed' ? <Badge variant="default">{t(order.status)}</Badge> : <Badge variant="destructive">{t(order.status)}</Badge>}
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenuActions id={order.orderId} />
+                        <DropdownMenuActions documentId={order.orderId} />
                       </TableCell>
                     </TableRow>
                   ))}
