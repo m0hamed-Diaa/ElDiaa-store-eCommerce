@@ -23,7 +23,6 @@ const InternetConnectionServicesProvider = ({
       }
 
       toast.success(`${t("internetPass")}`, {
-        position: "top-center",
         icon: <CiWifiOn size={20} />,
         duration: 3000,
       });
@@ -33,9 +32,8 @@ const InternetConnectionServicesProvider = ({
       dispatch(setInternetStatus(false));
       toastIdRef.current = toast.error(`${t("internetFail")}`, {
         description: `${t("internetContentFail")}`,
-        position: "top-center",
         icon: <CiWifiOff size={20} />,
-        duration: Infinity,
+        // duration: Infinity,
       });
     };
     // first Load

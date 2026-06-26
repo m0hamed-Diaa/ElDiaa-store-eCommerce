@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 const UpdateProductSchema =
     (isRTL: boolean) =>
@@ -224,7 +224,8 @@ const UpdateProduct = () => {
 
     // if admin want to update the second version
     const [nextLang, setNextLang] = useState<string>("");
-    const [openAlertDilaog, setOpenAlertDislog] = useState<boolean>(false);
+    const [openAlertDilaog, setOpenAlertDialog] = useState<boolean>(false);
+    const [updateConfirmed, setUpdateConfirmed] = useState(false);
 
     const onSubmitProduct = async (
         values: ProductValues
@@ -259,42 +260,53 @@ const UpdateProduct = () => {
                     ? "تم تعديل النسخة العربية"
                     : "English translation updated"
             );
-            setThumbnailId(null);
-
-            reset({
-                title: "",
-                description: "",
-                categories: [],
-                price: 0,
-                stock: 0,
-                rating: undefined,
-                reviewCount: undefined,
-                discount: undefined,
-            });
-
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";
-            }
 
             const nextLang =
                 currentProductLang === "en"
                     ? "ar"
                     : "en";
-            setOpenAlertDislog(true);
             setNextLang(nextLang);
+            if (!updateConfirmed) {
+                setOpenAlertDialog(true);
+                return;
+            }
+            setTimeout(() => navigate("/admin/products"), 1500);
 
-            setTimeout(() => {
-                navigate("/admin/products");
-            }, 1500)
-
-        } catch (error) {
-            console.log(error);
+        } catch {
             toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
         }
     };
 
-    if (isLoading) return <p className="text-primary">{isRTL ? "جار التحميل..." : "Loading..."}</p>
+    const handleUpdateConfirmation = () => {
+        setUpdateConfirmed(true);
+        setOpenAlertDialog(false);
 
+        navigate(`/admin/products/update/${documentId}?lang=${nextLang}`);
+    };
+
+    const handleUpdateClose = () => {
+        setOpenAlertDialog(false)
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+
+        reset({
+            title: "",
+            description: "",
+            categories: [],
+            price: 0,
+            stock: 0,
+            rating: undefined,
+            reviewCount: undefined,
+            discount: undefined
+        });
+
+        setNextLang("");
+        setTimeout(() => navigate("/admin/products"), 1500);
+    }
+
+    if (isLoading) return <p className="text-primary">{isRTL ? "جار التحميل..." : "Loading..."}</p>
 
     return (
         <div className="p-4">
@@ -483,31 +495,23 @@ const UpdateProduct = () => {
                     </p>
                 }
 
-                <Button type="submit" fullWidth form="create-admin-product" disabled={isProductLoading || isUploading}>{isProductLoading || isUploading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "اضافة المنتج" : "create Product"}`}</Button>
+                <Button type="submit" fullWidth form="create-admin-product" disabled={isProductLoading || isUploading}>{isProductLoading || isUploading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "تعديل المنتج" : "Update Product"}`}</Button>
             </form >
 
             <AlertDialog open={openAlertDilaog}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>
-                            {isRTL ? `حدّث المنتج الحالي بالإصدار ${nextLang === "ar" ? "العربى" : "Arabic"}` : `Update current product with ${nextLang === "en" ? "English" : "الانجليزى"} version!`}
+                            {isRTL ? `هل تريد تحديث المنتج الحالي بالإصدار ${nextLang === "ar" ? "Arabic" : "العربى"}` : `Are you want to update current product with ${nextLang === "en" ? "English" : "الانجليزى"} version!`}
                         </AlertDialogTitle>
-
-                        <AlertDialogDescription className="rtl:text-right">
-                            {isRTL ? " لأسباب أمنية تم تسجيل خروجك تلقائياً.يرجى تسجيل الدخول مرة أخرى." : "For security reasons, you were logged out automatically. Please log in again."}
-                        </AlertDialogDescription>
                     </AlertDialogHeader>
 
                     <AlertDialogFooter>
-                        <AlertDialogCancel>{currentProductLang === "en" ? "Cancel" : "اغلق"}</AlertDialogCancel>
+                        <AlertDialogCancel onClick={handleUpdateClose}>{currentProductLang === "en" ? "Cancel" : "اغلق"}</AlertDialogCancel>
                         <AlertDialogAction
-                            onClick={() =>
-                                navigate(
-                                    `/admin/products/update/${documentId}?lang=${nextLang}`
-                                )
-                            }
+                            onClick={handleUpdateConfirmation}
                         >
-                            {currentProductLang ? "تعديل النسخة " : "Update"}
+                            {isRTL ? "تعديل النسخة " : "Update"}
                         </AlertDialogAction>
                     </AlertDialogFooter>
 

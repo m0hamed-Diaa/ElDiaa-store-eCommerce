@@ -8,15 +8,19 @@ import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/shared/DataTable";
 import { useTranslation } from "react-i18next";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
-import { useGetProductsQuery } from "@/app/products/admin/productsApi";
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppSelector } from "@/app/hooks";
+import { useDeleteProductMutation, useGetProductsQuery } from "@/app/products/admin/productsApi";
+import { selectLang, toggleLanguage } from "@/app/features/language/languageSlice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import PaginationDemo from "@/components/shared/PaginationDemo";
 import DropdownMenuActions from "@/components/shared/DropdownMenuActions";
 import { formatTimeAgo } from "@/utils";
 import FilteringComponent from "@/components/shared/Filtering";
 import { useNavigate } from "react-router-dom";
 import AdminProductsSkeleton from "@/components/admin/skeletons/AdminProductsSkeleton";
+import { usePageTitle } from "@/components/usePageTitle";
+import { DialogDemo } from "@/components/shared/DialogDemo";
+import { closeDialogAdmin, selectIsDialogOpen, toggleDialogAdmin } from "@/app/admin/uiDialogSlice";
+import { toast } from "sonner";
 
 export default function AdminProductsPage() {
   const navigate = useNavigate();
@@ -24,12 +28,38 @@ export default function AdminProductsPage() {
   const lang = useAppSelector(selectLang);
   const isRTL = lang === "ar";
   const [search, setSearch] = useState("");
-  const [Lang, setLang] = useState<"ar" | "en">("ar");
+  const [Lang, setLang] = useState<"ar" | "en">(lang);
   const [sort, setSort] = useState<
     "asc" | "desc"
   >("desc");
   const [page, setPage] = useState(1);
   const { data, error, isLoading } = useGetProductsQuery({ lang: Lang, page, sort, search });
+  usePageTitle("منتجات الادمن | متجر الضياء", "Admin Products | El-diaa Store")
+
+  // if admin click to delete product
+  const [DeleteProduct, { isLoading: isProductDeleting }] =
+    useDeleteProductMutation();
+
+  const dialogState = useAppSelector(selectIsDialogOpen);
+  const dispatch = useAppDispatch();
+  const [deleteDocumentId, setDeleteDocumentId] = useState("");
+  const deleteProduct = async (documentId: string) => {
+    try {
+      await DeleteProduct(documentId).unwrap();
+      toast.success(
+        isRTL
+          ? "تم حذف المنتج بنجاح"
+          : "Product deleted successfully"
+      );
+      dispatch(toggleLanguage());
+      await DeleteProduct(documentId).unwrap();
+      setDeleteDocumentId("");
+      dispatch(toggleLanguage());
+      dispatch(closeDialogAdmin());
+    } catch {
+      toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
+    }
+  }
 
   if (error) {
     return <div className="text-red-500">{t("fetchError")}</div>;
@@ -92,7 +122,7 @@ export default function AdminProductsPage() {
                 !existingLocales.includes(locale)
             );
           const LocaleLang = missingLocales.join(", ") === "ar";
-          const isArabicLang = LocaleLang ? isRTL ? "عربى" : "Arabic" : "";
+          const isArabicLang = LocaleLang ? isRTL ? "عربى" : "Arabic" : isRTL ? "انجليزى" : "English";
           return (
             <TableRow key={product.id}>
               <TableCell>{product.id}</TableCell>
@@ -123,14 +153,14 @@ export default function AdminProductsPage() {
                 {product.discount}% {t("off")}
               </Badge> : ("-")}</TableCell>
               <TableCell>{product.rating}</TableCell>
-              <TableCell>
+              <TableCell className="text-center">
                 {
                   missingLocales.length > 0 ? (
                     <div className="flex flex-col">
-                      <Badge variant="destructive">
+                      <Badge variant="destructive" className="p-4">
                         {isRTL
-                          ? <>{`الترجمة الناقصة: ${isArabicLang}`} <Button variant={"link"} className="p-0" onClick={() => navigate(`/admin/products/create`)}>اضافة</Button></>
-                          : <>{`Missing translation: ${isArabicLang}`} + <Button variant={"link"} className="p-0" onClick={() => navigate(`/admin/products/create`)}>Create</Button></>
+                          ? <>{`الترجمة الناقصة: ${isArabicLang}`}: <Button variant={"link"} className="p-0" onClick={() => navigate(`/admin/products/create`)}>اضافة</Button></>
+                          : <>{`Missing translation: ${isArabicLang}`}: <Button variant={"link"} className="p-0" onClick={() => navigate(`/admin/products/create`)}>Create</Button></>
                         }
                       </Badge>
                     </div>
@@ -138,8 +168,8 @@ export default function AdminProductsPage() {
                     : <Badge variant={"default"}>
                       ✅ </Badge>}
               </TableCell>
-              <TableCell className="text-right">
-                <DropdownMenuActions documentId={product.documentId} productLang={product.locale} />
+              <TableCell className="text-right" onClick={() => setDeleteDocumentId(product.documentId)}>
+                <DropdownMenuActions updatePath={`/admin/products/update/`} documentId={product.documentId} productLang={product.locale} />
               </TableCell>
             </TableRow>
           )
@@ -151,6 +181,9 @@ export default function AdminProductsPage() {
           </TableRow>
         )
         } />
+
+      {/* Open Dialog for deleting */}
+      <DialogDemo open={dialogState} onClick={() => deleteProduct(deleteDocumentId)} setOpen={() => dispatch(toggleDialogAdmin())} title={isRTL ? "حذف هذا المنتج!" : "Delete this product!"} description={isRTL ? `هل تريد حذف المنتج الحالى بالاصدار العربى والانجليزى؟` : `Do you want to delete this current product with arabic & english version?`} submitButton={isRTL ? "حذف المنتج؟" : "Delete Product?"} loading={isProductDeleting} />
 
       {/* Pagination */}
       < PaginationDemo currentPage={page}

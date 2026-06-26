@@ -582,12 +582,10 @@ const CreateProduct = () => {
                     </p>
                 }
 
-                <Button type="submit" fullWidth form="create-admin-product" disabled={isLoading || isProductLoading}>{isLoading || isProductLoading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "اضافة المنتج" : "create Product"}`}</Button>
+                <Button type="submit" fullWidth form="create-admin-product" disabled={isLoading || isProductLoading}>{isLoading || isProductLoading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "اضافة المنتج" : "Create Product"}`}</Button>
             </form >
         </div>
     )
 }
 
-export default CreateProduct
-
-{/*  */ }
+export default CreateProduct;

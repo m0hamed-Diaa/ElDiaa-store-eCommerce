@@ -33,6 +33,7 @@ import { adminHeroSlidesApi } from "./hero-slides/admin/heroSlice";
 import { authApiSlice } from "./users/authApi";
 import { userProfileApi } from "./users/profileApi";
 import { uploadApi } from "./features/Upload/uploadApi";
+import uiDialogSlice from "./admin/uiDialogSlice";
 
 const cartPersistConfig = {
     key: "cart",
@@ -47,6 +48,7 @@ export const store = configureStore({
         internet: internetSlice,
         cart: persistedCartReducer,
         ui: uiSlice,
+        dialog: uiDialogSlice,
         heart: heartSlice,
         [productsApi.reducerPath]: productsApi.reducer,
         [adminProductsApi.reducerPath]: adminProductsApi.reducer,
