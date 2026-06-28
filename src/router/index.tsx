@@ -30,9 +30,11 @@ import LoginPage from "@/pages/auth/Login";
 import RegisterPage from "@/pages/auth/Register";
 import ResetPasswordPage from "@/pages/auth/ResetPassword";
 import ForgotPasswordPage from "@/pages/auth/ForgotPassword";
-import ChangePasswordPage from "@/pages/UsersPages/ChangePasswordPage";
+import ChangePasswordPage from "@/pages/shared/ChangePasswordPage";
 import CreateProduct from "@/pages/Admin/CreateProduct";
 import UpdateProduct from "@/pages/Admin/UpdateProduct";
+import CreateCategires from "@/pages/Admin/CreateCategory";
+import UpdateCategory from "@/pages/Admin/UpdateCategory";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -107,6 +109,7 @@ const router = createBrowserRouter(
               <AdminDashboard />
             }
           />
+          
           <Route
             path="products"
             element={
@@ -125,12 +128,26 @@ const router = createBrowserRouter(
               <UpdateProduct />
             }
           />
+
           <Route
             path="categories"
             element={
               <AdminCategories />
             }
           />
+          <Route
+            path="categories/create"
+            element={
+              <CreateCategires />
+            }
+          />
+          <Route
+            path="categories/update/:documentId"
+            element={
+              <UpdateCategory />
+            }
+          />
+
           <Route
             path="hero-slides"
             element={

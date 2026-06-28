@@ -5,6 +5,8 @@
     "filter": "Filter Categories",
     "categoryId": "Category ID",
     "name": "Name",
+    "categoryTitle": "Category title",
+    "backToCatePage": "Back to categories page",
     "products": "Products",
     "status": "Status",
     "action": "Action",

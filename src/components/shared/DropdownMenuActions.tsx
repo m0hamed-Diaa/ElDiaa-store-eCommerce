@@ -9,7 +9,7 @@ import { openDialogAdmin } from "@/app/admin/uiDialogSlice";
 
 interface DropdownMenuActionsProps {
     documentId: string;
-    productLang: string;
+    productLang: string | undefined;
     updatePath: string;
 }
 

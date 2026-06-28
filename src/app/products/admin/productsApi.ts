@@ -102,9 +102,10 @@ export const adminProductsApi = createApi({
         updateProduct: builder.mutation({
             query: ({
                 documentId,
+                locale,
                 body,
             }) => ({
-                url: `/products/${documentId}`,
+                url: `/products/${documentId}?locale=${locale}`,
                 method: "PUT",
                 body: {
                     data: body

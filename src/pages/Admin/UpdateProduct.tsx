@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import AlertAdminDilaog from "@/components/admin/AlertDilaog";
 
 const UpdateProductSchema =
     (isRTL: boolean) =>
@@ -237,8 +237,8 @@ const UpdateProduct = () => {
         try {
             await updateProduct({
                 documentId: documentId!,
+                locale: currentProductLang,
                 body: {
-                    locale: currentProductLang,
 
                     title: values.title,
                     description: values.description,
@@ -498,25 +498,7 @@ const UpdateProduct = () => {
                 <Button type="submit" fullWidth form="create-admin-product" disabled={isProductLoading || isUploading}>{isProductLoading || isUploading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "تعديل المنتج" : "Update Product"}`}</Button>
             </form >
 
-            <AlertDialog open={openAlertDilaog}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            {isRTL ? `هل تريد تحديث المنتج الحالي بالإصدار ${nextLang === "ar" ? "Arabic" : "العربى"}` : `Are you want to update current product with ${nextLang === "en" ? "English" : "الانجليزى"} version!`}
-                        </AlertDialogTitle>
-                    </AlertDialogHeader>
-
-                    <AlertDialogFooter>
-                        <AlertDialogCancel onClick={handleUpdateClose}>{currentProductLang === "en" ? "Cancel" : "اغلق"}</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleUpdateConfirmation}
-                        >
-                            {isRTL ? "تعديل النسخة " : "Update"}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-
-                </AlertDialogContent>
-            </AlertDialog >
+            <AlertAdminDilaog openAlertDilaog={openAlertDilaog} handleUpdateClose={handleUpdateClose} handleUpdateConfirm={handleUpdateConfirmation} nextLanguage={nextLang} />
         </div >
     )
 }

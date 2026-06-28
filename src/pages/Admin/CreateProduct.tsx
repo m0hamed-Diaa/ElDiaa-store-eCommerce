@@ -72,6 +72,7 @@ const createProductSchema =
             rating: z
                 .coerce
                 .number()
+                .max(5)
                 .optional(),
 
             reviewCount: z
@@ -582,7 +583,7 @@ const CreateProduct = () => {
                     </p>
                 }
 
-                <Button type="submit" fullWidth form="create-admin-product" disabled={isLoading || isProductLoading}>{isLoading || isProductLoading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "اضافة المنتج" : "Create Product"}`}</Button>
+                <Button type="submit" fullWidth form="create-admin-product" disabled={isLoading || isProductLoading || isUploading}>{isLoading || isProductLoading || isUploading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "اضافة المنتج" : "Create Product"}`}</Button>
             </form >
         </div>
     )

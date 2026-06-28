@@ -5,6 +5,8 @@
   "filter": "تصفية الأقسام",
   "categoryId": "معرف القسم",
   "name": "الاسم",
+  "categoryTitle": "عنوان الفئة",
+  "backToCatePage": "رجوع لصفحة الفئات",
   "products": "المنتجات",
   "status": "الحالة",
   "action": "الإجراء",

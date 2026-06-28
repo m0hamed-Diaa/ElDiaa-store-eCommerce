@@ -35,7 +35,6 @@ export default function AdminProductsPage() {
   const [page, setPage] = useState(1);
   const { data, error, isLoading } = useGetProductsQuery({ lang: Lang, page, sort, search });
   usePageTitle("منتجات الادمن | متجر الضياء", "Admin Products | El-diaa Store")
-
   // if admin click to delete product
   const [DeleteProduct, { isLoading: isProductDeleting }] =
     useDeleteProductMutation();
@@ -129,7 +128,7 @@ export default function AdminProductsPage() {
               <TableCell>{product.title}</TableCell>
               <TableCell>
                 <img
-                  src={product.thumbnail.formats?.thumbnail?.url}
+                  src={product.thumbnail?.formats?.thumbnail?.url}
                   alt={product.title}
                   className="h-16 w-16 object-cover rounded-xl border border-primary"
                 />

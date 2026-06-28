@@ -16,9 +16,9 @@ interface IProps {
     dataLength?: number;
     translationKey: string;
     showLang?: boolean;
-    Lang?: "ar" | "en";
-    setLang?: (value: "ar" | "en") => void;
-    disabled?: boolean;
+    Lang: "ar" | "en";
+    setLang: (value: "ar" | "en") => void;
+    disabled: boolean;
 }
 
 const FilteringComponent = ({ search, setSearch, sort, setSort, dataLength, translationKey, showLang = false, Lang, setLang, disabled }: IProps) => {
@@ -59,24 +59,23 @@ const FilteringComponent = ({ search, setSearch, sort, setSort, dataLength, tran
                         <SelectComponent disabled={dataLength} sort={sort} onChangeSort={setSort} />
 
                         {/* Select Language */}
-                        {showLang && (
-                            <Select value={Lang}
-                                onValueChange={(value: "ar" | "en") =>
-                                    setLang?.(value)
-                                }
-                                disabled={disabled === true}>
-                                <SelectTrigger className="w-full md:w-auto">
-                                    <SelectValue placeholder={`${isRTL ? "اللغة" : "Langauge"}`} />
-                                </SelectTrigger>
-                                <SelectContent className="bg-primary">
-                                    <SelectGroup>
-                                        <SelectLabel>{isRTL ? "اختر اللغة" : "Select language"}</SelectLabel>
-                                        <SelectItem value="ar">{isRTL ? "عربى" : "Arabic"}</SelectItem>
-                                        <SelectItem value="en">{isRTL ? "انجليزى" : "English"}</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        )}
+                        <Select value={Lang}
+                            onValueChange={(value: "ar" | "en") =>
+                                setLang?.(value)
+                            }
+                            disabled={disabled === true}>
+                            <SelectTrigger className="w-full md:w-auto">
+                                <SelectValue placeholder={`${isRTL ? "اللغة" : "Langauge"}`} />
+                            </SelectTrigger>
+                            <SelectContent className="bg-primary">
+                                <SelectGroup>
+                                    <SelectLabel>{isRTL ? "اختر اللغة" : "Select language"}</SelectLabel>
+                                    <SelectItem value="ar">{isRTL ? "عربى" : "Arabic"}</SelectItem>
+                                    <SelectItem value="en">{isRTL ? "انجليزى" : "English"}</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        
                     </div>
                 </div>
             </CardContent>

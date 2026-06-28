@@ -65,6 +65,7 @@ export interface StrapiCategory {
   id: number;
   documentId: string;
   title: string;
+  locale?: string;
   products: IProduct[];
 }
 
