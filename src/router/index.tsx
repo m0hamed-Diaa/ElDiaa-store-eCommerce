@@ -16,7 +16,7 @@ import AdminLayout from "@/pages/Admin/AdminLayout";
 import AdminDashboard from "@/pages/Admin/AdminDashboard";
 import AdminProducts from "@/pages/Admin/AdminProducts";
 import AdminCategories from "@/pages/Admin/CategoriesPage";
-import AdminHeroSlides from "@/pages/Admin/AdminHeroSlides";
+import AdminHeroSlides from "@/pages/Admin/AdminBannersPage";
 import OrdersPage from "@/pages/Admin/OrdersPage";
 import UsersPage from "@/pages/Admin/UsersPage";
 import ReviewsPage from "@/pages/Admin/ReviewsPage";
@@ -35,6 +35,8 @@ import CreateProduct from "@/pages/Admin/CreateProduct";
 import UpdateProduct from "@/pages/Admin/UpdateProduct";
 import CreateCategires from "@/pages/Admin/CreateCategory";
 import UpdateCategory from "@/pages/Admin/UpdateCategory";
+import UpdateBanner from "@/pages/Admin/UpdateBannerPage";
+import CreateBanner from "@/pages/Admin/CreateBanner";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -109,7 +111,7 @@ const router = createBrowserRouter(
               <AdminDashboard />
             }
           />
-          
+
           <Route
             path="products"
             element={
@@ -154,6 +156,19 @@ const router = createBrowserRouter(
               <AdminHeroSlides />
             }
           />
+          <Route
+            path="hero-slides/create"
+            element={
+              <CreateBanner />
+            }
+          />
+          <Route
+            path="hero-slides/update/:documentId"
+            element={
+              <UpdateBanner />
+            }
+          />
+
           <Route
             path="orders"
             element={

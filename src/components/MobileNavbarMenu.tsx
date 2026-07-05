@@ -137,7 +137,7 @@ const MobileNavbarMenu = () => {
                         </nav>
 
                         {/* Categories */}
-                        <div className={`mt-8 border-t border-border/50 pt-6 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden border ${cartItems.length ? "h-45" : "h-40"}`}>
+                        <div className={`mt-8 border-t border-border/50 pt-6 overflow-y-auto border ${cartItems.length ? "h-45" : "h-40"}`}>
 
                             <p className="mb-4 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                 {t("category")}

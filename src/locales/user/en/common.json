@@ -15,6 +15,8 @@
   "welcomeBack": "Welcome.Sign in",
   "welcomeBackTitle": "Account & Menus",
   "welcomeBackContent": "Sign in to your account to continue shopping.",
+  "welcomeAdminBack": "Welcome Admin.Sign in",
+  "welcomeBackAdminContent": "Sign in to your admin account to continue managing the store.",
   "yourAccount": "Your Account",
   "yourAddress": "Your Address",
   "login": "Login",

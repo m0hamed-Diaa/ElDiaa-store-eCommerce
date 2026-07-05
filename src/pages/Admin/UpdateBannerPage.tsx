@@ -5,9 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useUploadFilesMutation } from "@/app/features/Upload/uploadApi";
 import { useGetCategoriesQuery } from "@/app/categories/admin/categoryApi";
 import { useEffect, useRef, useState } from "react";
-import { useAddProductTranslationMutation, useCreateProductMutation, useGetSingleProductQuery } from "@/app/products/admin/productsApi";
+import { useGetSingleProductQuery, useUpdateProductMutation } from "@/app/products/admin/productsApi";
 import { useAppSelector } from "@/app/hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { selectLang } from "@/app/features/language/languageSlice";
 import { Controller, useForm } from "react-hook-form";
@@ -18,8 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
+import AlertAdminDilaog from "@/components/admin/AlertDilaog";
 
-const createProductSchema =
+const UpdateProductSchema =
     (isRTL: boolean) =>
         z.object({
             title: z
@@ -72,7 +73,6 @@ const createProductSchema =
             rating: z
                 .coerce
                 .number()
-                .max(5)
                 .optional(),
 
             reviewCount: z
@@ -86,50 +86,53 @@ const createProductSchema =
                 .optional(),
         });
 
-const CreateProduct = () => {
+const UpdateBanner = () => {
+    const { documentId } = useParams();
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { t } = useTranslation("adminProducts");
     const lang = useAppSelector(selectLang);
     const isRTL = lang === "ar";
-    const [productLocale, setProductLocale] =
-        useState<"en" | "ar">("en");
-    const isTraslation = productLocale === "ar";
-    const { data: categories } = useGetCategoriesQuery({ lang: productLocale });
 
-    // get Current product with en version
-    const [pendingDocumentId, setPendingDocumentId] =
-        useState<string | null>(null);
+    const currentProductLang =
+        searchParams.get("lang") as "en" | "ar";
+
+    const { data, isLoading } =
+        useGetSingleProductQuery({
+            documentId: documentId!,
+            lang: currentProductLang,
+        });
+
+    const { data: categories } = useGetCategoriesQuery({ lang: currentProductLang });
+
 
     // on open page 
     useEffect(() => {
-        const pending = localStorage.getItem(
-            "pendingProductTranslation"
-        );
+        if (!data?.data) return;
 
-        if (!pending) return;
+        const product = data.data;
 
-        const data = JSON.parse(pending);
+        reset({
+            title: product.title,
+            description: product.description,
+            categories: product.categories.map(
+                c => c.documentId
+            ),
+            price: product.price,
+            stock: product.stock,
+            rating: product.rating,
+            reviewCount: product.reviewCount,
+            discount: product.discount,
+        });
 
-        setPendingDocumentId(
-            data.documentId
-        );
-        setProductDocumentId(data.documentId);
-        setThumbnailId(data.thumbnailId);
-        setProductLocale("ar");
-        toast.warning(isRTL ? "أكمل الترجمة العربية للمنتج أولاً" : "Complete the translation of the product first!");
-    }, []);
+        setThumbnailId(product.thumbnail.id);
+    }, [data]);
 
-    // ======================== create Product ===========================
-    // First Create
-    const [createProduct, { isLoading: isProductLoading }] =
-        useCreateProductMutation();
-    // Secound Create
-    const [addProductTranslation, { isLoading }] =
-        useAddProductTranslationMutation();
+    // ======================== Update Product ===========================
+    const [updateProduct, { isLoading: isProductLoading }] =
+        useUpdateProductMutation();
 
-    const [productDocumentId, setProductDocumentId] = useState<string>("");
-
-    const ProductValidationScheme = createProductSchema(isRTL);
+    const ProductValidationScheme = UpdateProductSchema(isRTL);
     type ProductValues =
         z.input<typeof ProductValidationScheme>;
 
@@ -166,52 +169,6 @@ const CreateProduct = () => {
     } = ProductForm;
 
 
-    // get current product with en version
-    const {
-        data: singleProduct,
-    } = useGetSingleProductQuery(
-        {
-            documentId: pendingDocumentId!,
-            lang: "en",
-        },
-        {
-            skip: !pendingDocumentId,
-        }
-    );
-
-    useEffect(() => {
-        if (!singleProduct?.data) return;
-
-        const product =
-            singleProduct.data;
-
-        reset({
-            title: "",
-            description: "",
-
-            categories:
-                product.categories.map(
-                    (cat) =>
-                        cat.documentId
-                ),
-
-            price: product.price,
-
-            stock: product.stock,
-
-            rating: product.rating,
-
-            reviewCount:
-                product.reviewCount,
-
-            discount:
-                product.discount,
-        });
-
-        toast.warning(
-            isRTL ? "أكمل الترجمة العربية للمنتج أولاً!" : "Complete the translate of product first!"
-        );
-    }, [singleProduct, reset]);
     // =========== Strat Uplaod Image ==========
     const [
         uploadFiles,
@@ -265,6 +222,11 @@ const CreateProduct = () => {
     const [imageError, setImageError] = useState("")
     // =========== End Uplaod Image ==========
 
+    // if admin want to update the second version
+    const [nextLang, setNextLang] = useState<string>("");
+    const [openAlertDilaog, setOpenAlertDialog] = useState<boolean>(false);
+    const [updateConfirmed, setUpdateConfirmed] = useState(false);
+
     const onSubmitProduct = async (
         values: ProductValues
     ) => {
@@ -273,118 +235,87 @@ const CreateProduct = () => {
             return
         };
         try {
-            if (!productDocumentId) {
+            await updateProduct({
+                documentId: documentId!,
+                locale: currentProductLang,
+                body: {
 
-                const response =
-                    await createProduct({
-                        ...values,
-                        thumbnail: thumbnailId,
-                        locale: productLocale,
-                    }).unwrap();
+                    title: values.title,
+                    description: values.description,
 
-                setProductDocumentId(
-                    response.data.documentId
-                );
+                    categories: values.categories,
 
-                reset({
-                    ...values,
-                    title: "",
-                    description: "",
-                    categories: [],
-                });
+                    thumbnail: thumbnailId,
 
-                const nextLocale =
-                    productLocale === "en"
-                        ? "ar"
-                        : "en";
-
-                setProductLocale(nextLocale);
-
-                localStorage.setItem(
-                    "pendingProductTranslation",
-                    JSON.stringify({
-                        documentId: response.data.documentId,
-                        locale: "ar",
-                        thumbnailId,
-                    })
-                );
-
-                toast.info(
-                    nextLocale === "ar"
-                        ? "اكتب النسخة العربية لهذا المنتج الان!"
-                        : "Write English translation for this product now!"
-                );
-                return;
-            }
-
-            await addProductTranslation({
-                documentId: productDocumentId,
-
-                locale: productLocale,
-
-                title: values.title,
-                description: values.description,
-
-                categories: values.categories,
-
-                thumbnail: thumbnailId,
-
+                    price: values.price,
+                    stock: values.stock,
+                    rating: values.rating,
+                    reviewCount: values.reviewCount,
+                    discount: values.discount,
+                },
             }).unwrap();
 
             toast.success(
-                productLocale === "ar"
-                    ? "تم إضافة النسخة العربية"
-                    : "English translation added"
+                currentProductLang === "ar"
+                    ? "تم تعديل النسخة العربية"
+                    : "English translation updated"
             );
-            setThumbnailId(null);
 
-            reset({
-                title: "",
-                description: "",
-                categories: [],
-                price: 0,
-                stock: 0,
-                rating: undefined,
-                reviewCount: undefined,
-                discount: undefined,
-            });
-
-            if (fileInputRef.current) {
-                fileInputRef.current.value = "";
+            const nextLang =
+                currentProductLang === "en"
+                    ? "ar"
+                    : "en";
+            setNextLang(nextLang);
+            if (!updateConfirmed) {
+                setOpenAlertDialog(true);
+                return;
             }
-            localStorage.removeItem(
-                "pendingProductTranslation"
-            );
-            setProductDocumentId("");
-
-            setProductLocale("en");
-
-            setTimeout(() => {
-                navigate("/admin/products");
-            }, 1500)
+            setTimeout(() => navigate("/admin/products"), 1500);
 
         } catch {
             toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
         }
     };
 
+    const handleUpdateConfirmation = () => {
+        setUpdateConfirmed(true);
+        setOpenAlertDialog(false);
+
+        navigate(`/admin/products/update/${documentId}?lang=${nextLang}`);
+    };
+
+    const handleUpdateClose = () => {
+        setOpenAlertDialog(false)
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+
+        reset({
+            title: "",
+            description: "",
+            categories: [],
+            price: 0,
+            stock: 0,
+            rating: undefined,
+            reviewCount: undefined,
+            discount: undefined
+        });
+
+        setNextLang("");
+        setTimeout(() => navigate("/admin/products"), 1500);
+    }
+
+    if (isLoading) return <p className="text-primary">{isRTL ? "جار التحميل..." : "Loading..."}</p>
+
     return (
         <div className="p-4">
-            <p className="font-bold">{isRTL ? "اعمل منتج جديد تضيفه للمتجر" : "Create new product to store"}</p>
             <div className="flex items-center justify-between">
-                <p className="text-primary">{productLocale === "en" ?
-                    isRTL ? `ملاحظة: يجب ان تعمل المنتج ب الانجليزى الاول` : `NOTE: You MUST Create product with English first` :
-                    isRTL ? `اعمل المنتج بالعربى:` : `Create product with arabic:`}
-                </p>
+                <p className="font-bold">{isRTL ? `عدل المنتج الحالى ${data?.data?.title}` : `Update current product ${data?.data?.title}`}</p>
                 <Button variant={"secondary"} onClick={() => navigate("/admin/products")}>{t("backToProdPage")}</Button>
             </div>
-            {productLocale == "ar" && (
-                <p className="text-destructive mb-2">
-                    {isRTL ? "لا تنسى ان تعمل المنتج بالعربى:" : "Don't forgot to create product with arabic"}
-                </p>
-            )}
             <p>
-                {productLocale === "en"
+                {currentProductLang === "en"
                     ? isRTL ? "الاصدار الانجليزى" : "English Version"
                     : isRTL ? "الاصدار العربى" : "Arabic Version"}
             </p>
@@ -396,7 +327,7 @@ const CreateProduct = () => {
                     {...register("title")}
                     id="title"
                     placeholder={
-                        productLocale === "en"
+                        currentProductLang === "en"
                             ? isRTL ? "عنوان المنتج بالانجليزى..." : "English Product title..."
                             : isRTL ? "عنوان المنتج بالعربى..." : "Arabic Product title..."
                     }
@@ -413,7 +344,7 @@ const CreateProduct = () => {
                     id="description"
                     rows={5}
                     placeholder={
-                        productLocale === "en"
+                        currentProductLang === "en"
                             ? isRTL ? "وصف المنتج بالانجليزى..." : "English Product description..."
                             : isRTL ? "وصف المنتج بالعربى..." : "Arabic Product description"
                     }
@@ -427,28 +358,17 @@ const CreateProduct = () => {
                 <Label>{t("category")}</Label>
                 <Controller
                     control={control}
-                    key={productLocale}
                     name="categories"
                     render={({ field }) => (
                         <div className="space-y-2">
-                            {categories?.data?.map(cat => (
+                            {categories?.data?.map((cat) => (
                                 <label
                                     key={cat.documentId}
-                                    className="
-                                        flex
-                                        items-center
-                                        gap-2
-                                    "
+                                    className="flex items-center gap-2"
                                 >
                                     <Checkbox
-                                        checked={
-                                            field.value.includes(
-                                                cat.documentId
-                                            )
-                                        }
-                                        onCheckedChange={(
-                                            checked
-                                        ) => {
+                                        checked={field.value.includes(cat.documentId)}
+                                        onCheckedChange={(checked) => {
                                             if (checked) {
                                                 field.onChange([
                                                     ...field.value,
@@ -457,9 +377,7 @@ const CreateProduct = () => {
                                             } else {
                                                 field.onChange(
                                                     field.value.filter(
-                                                        id =>
-                                                            id !==
-                                                            cat.documentId
+                                                        (id) => id !== cat.documentId
                                                     )
                                                 );
                                             }
@@ -481,7 +399,6 @@ const CreateProduct = () => {
                 <Label htmlFor="price">{t("productPrice")}</Label>
                 <Input
                     type="number"
-                    disabled={isTraslation}
                     id="price"
                     {...register("price")}
                 />
@@ -494,7 +411,6 @@ const CreateProduct = () => {
                 <Label htmlFor="stock">{t("productStock")}</Label>
                 <Input
                     type="number"
-                    disabled={isTraslation}
                     id="stock"
                     {...register("stock")}
                 />
@@ -507,7 +423,7 @@ const CreateProduct = () => {
                 <Label htmlFor="rating">{t("productRating")}</Label>
                 <Input
                     type="number"
-                    disabled={isTraslation}
+
                     id="rating"
                     step="0.1"
                     {...register("rating")}
@@ -521,7 +437,6 @@ const CreateProduct = () => {
                 <Label htmlFor="reviewCount">{t("productReviewCount")}</Label>
                 <Input
                     type="number"
-                    disabled={isTraslation}
                     id="reviewCount"
                     {...register("reviewCount")}
                 />
@@ -534,7 +449,6 @@ const CreateProduct = () => {
                 <Label htmlFor="discount">{t("productDiscount")}</Label>
                 <Input
                     type="number"
-                    disabled={isTraslation}
                     id="discount"
                     {...register("discount")}
                 />
@@ -553,7 +467,7 @@ const CreateProduct = () => {
                     onClick={() =>
                         fileInputRef.current?.click()
                     }
-                    disabled={isUploading || isTraslation}
+                    disabled={isUploading}
                 >
                     {thumbnailId ?
                         (isRTL
@@ -564,7 +478,7 @@ const CreateProduct = () => {
 
                 <Input
                     ref={fileInputRef}
-                    disabled={isUploading || isTraslation}
+                    disabled={isUploading}
                     type="file"
                     accept="
                         image/jpeg,
@@ -581,10 +495,12 @@ const CreateProduct = () => {
                     </p>
                 }
 
-                <Button type="submit" fullWidth form="create-admin-product" disabled={isLoading || isProductLoading || isUploading}>{isLoading || isProductLoading || isUploading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "اضافة المنتج" : "Create Product"}`}</Button>
+                <Button type="submit" fullWidth form="create-admin-product" disabled={isProductLoading || isUploading}>{isProductLoading || isUploading ? <>{isRTL ? "جار التجميل..." : "Loading..."} <Spinner /></> : `${isRTL ? "تعديل المنتج" : "Update Product"}`}</Button>
             </form >
-        </div>
+
+            <AlertAdminDilaog openAlertDilaog={openAlertDilaog} handleUpdateClose={handleUpdateClose} handleUpdateConfirm={handleUpdateConfirmation} nextLanguage={nextLang} />
+        </div >
     )
 }
 
-export default CreateProduct;
+export default UpdateBanner;

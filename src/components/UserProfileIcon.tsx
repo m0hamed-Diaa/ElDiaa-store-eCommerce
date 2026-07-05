@@ -32,9 +32,7 @@ const UserProfileIcon = ({ allowedRole }: IUserProps) => {
 
     const userLoggedIn = getAuth();
     // Check if user | admin
-    if (userLoggedIn?.role !== allowedRole) {
-        return null;
-    }
+    if (userLoggedIn?.role !== allowedRole && userLoggedIn?.role) return;
 
     const isAdmin = userLoggedIn?.role === "admin";
     const settingsBasePath = isAdmin ? "/admin/settings" : "/settings";
@@ -50,6 +48,8 @@ const UserProfileIcon = ({ allowedRole }: IUserProps) => {
     const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useGetProfileQuery(userLoggedIn?.userId);
     const { data: customerData, isLoading } = useGetCustomerByUserQuery(userLoggedIn?.userId);
     const [islogout, setLogout] = useState(false);
+
+    // Logout function
     const handleLogout = () => {
         setLogout(true);
         removeAuth();
@@ -109,8 +109,10 @@ const UserProfileIcon = ({ allowedRole }: IUserProps) => {
                                             <li>
                                                 <DialogDemo loading={islogout} submitButton={t("logout")} onClick={() => handleLogout()} title={`${isRTL ? "هل انت متاكد من تسجيل الخروج!" : "Are you sure you logout!"}`} description={`${isRTL ? "لو سجلت الخروج، ستحتاج لتسجيل الدخول مرة اخرى" : "If you logout, you'll need to log in again."}`} children={<Button fullWidth variant={"destructive"}>
                                                     {t("logout")} <GoSignOut />
-                                                </Button>} />
-                                            </li></>
+                                                </Button>
+                                                } />
+                                            </li>
+                                        </>
                                     }
                                 </ul>
                             </NavigationMenuContent>

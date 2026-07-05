@@ -141,11 +141,11 @@ export default function LoginPage({ mode }: LoginPageProps) {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>
-            {t("welcomeBack")}
+            {mode === "admin" ? t("welcomeAdminBack") : t("welcomeBack")}
           </CardTitle>
 
           <CardDescription>
-            {t("welcomeBackContent")}
+            {mode === "admin" ? t("welcomeBackAdminContent") : t("welcomeBackContent")}
           </CardDescription>
         </CardHeader>
 

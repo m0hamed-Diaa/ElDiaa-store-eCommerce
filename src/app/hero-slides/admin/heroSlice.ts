@@ -2,7 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
     IHeroSlide,
     StrapiResponse,
+    StrapiSingleResponse,
 } from "@/interfaces";
+import { getAuth } from "@/lib/authCookies";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,7 +17,7 @@ export const adminHeroSlidesApi = createApi({
         baseUrl: `${API_URL}/api`,
 
         prepareHeaders: (headers) => {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc5OTc5NjUwLCJleHAiOjE3ODI1NzE2NTB9.7WCrqwRC2QwkAPfWViEGM9NuKGtDLczvE0bD30El0ME";
+            const token = getAuth()?.token;
 
             if (token) {
                 headers.set(
@@ -55,6 +57,15 @@ export const adminHeroSlidesApi = createApi({
             providesTags: ["HeroSlides"],
         }),
 
+        // Get Single Banner
+        getSingleHeroSlide: builder.query<
+            StrapiSingleResponse<IHeroSlide>,
+            { lang: string; documentId: string }
+        >({
+            query: ({ lang, documentId }) =>
+                `/hero-slides/${documentId}?locale=${lang}&populate=*`,
+        }),
+
         /* =========================
            CREATE HERO SLIDES
         ========================= */
@@ -62,12 +73,29 @@ export const adminHeroSlidesApi = createApi({
             query: (body) => ({
                 url: "/hero-slides",
                 method: "POST",
-                body,
+                body: {
+                    data: body,
+                },
             }),
 
             invalidatesTags: ["HeroSlides"],
         }),
-
+        // CREATE HERO SLIDE TRANSLATION
+        addHeroSlideTranslation: builder.mutation({
+            query: ({
+                documentId,
+                locale,
+                title,
+                subtitle,
+                image
+            }) => ({
+                url: `/hero-slides/${documentId}?locale=${locale}`,
+                method: "PUT",
+                body: {
+                    data: { title, subtitle, image },
+                },
+            }),
+        }),
         /* =========================
            UPDATE HERO SLIDES
         ========================= */
@@ -81,9 +109,10 @@ export const adminHeroSlidesApi = createApi({
             }) => ({
                 url: `/hero-slides/${documentId}`,
                 method: "PUT",
-                body,
+                body: {
+                    data: body
+                }
             }),
-
             invalidatesTags: ["HeroSlides"],
         }),
 
@@ -103,7 +132,9 @@ export const adminHeroSlidesApi = createApi({
 
 export const {
     useGetHeroSlidesQuery,
+    useGetSingleHeroSlideQuery,
     useCreateHeroSlideMutation,
+    useAddHeroSlideTranslationMutation,
     useUpdateHeroSlideMutation,
     useDeleteHeroSlideMutation,
 } = adminHeroSlidesApi;

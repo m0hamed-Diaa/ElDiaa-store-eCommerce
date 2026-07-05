@@ -31,7 +31,7 @@ export default function CategoriesPage() {
     const [page, setPage] = useState(1);
     const { data, error, isLoading } = useGetCategoriesQuery({ lang: Lang, search, sort, page });
 
-    // if admin click to delete product
+    // if admin click to delete Category
     const [DeleteCategory, { isLoading: isCategoryDeleting }] =
         useDeleteCategoryMutation();
 

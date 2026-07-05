@@ -23,17 +23,20 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
 import { selectLang } from "@/app/features/language/languageSlice";
 import { useAppSelector } from "@/app/hooks";
 import { useSidebar } from "@/components/ui/sidebar";
-import { getAuth } from "@/lib/authCookies";
+import { getAuth, removeAuth } from "@/lib/authCookies";
 import { useGetCustomerByUserQuery, useGetProfileQuery } from "@/app/users/profileApi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 import { GoPerson } from "react-icons/go";
+import { DialogDemo } from "../shared/DialogDemo";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const Pages = [
     {
@@ -96,6 +99,7 @@ const Pages = [
 ];
 
 export function AdminSidebar() {
+    const navigate = useNavigate();
     const { t } = useTranslation("adminCommon");
     const lang = useAppSelector(selectLang);
     const isRTL = lang === "ar";
@@ -111,6 +115,16 @@ export function AdminSidebar() {
             setOpenMobile(false);
         }
     };
+
+    // Logout function
+    const [islogout, setLogout] = useState(false);
+    const handleLogout = () => {
+        setLogout(true);
+        removeAuth();
+        localStorage.removeItem("rememberedEmail");
+        toast.success(t("logoutMessage"));
+        navigate("/admin/login", { replace: true })
+    }
     return (
         <Sidebar
             side={isRTL ? "right" : "left"}
@@ -220,16 +234,14 @@ export function AdminSidebar() {
 
             {/* FOOTER */}
             <SidebarFooter className={`border-t ${isCollapsed ? "p-2" : "p-4"}`}>
-                <Button
-                    variant={"destructive"}
-                    className={`
-                        w-full
-                        ${isCollapsed ? "justify-center px-2" : ""}
-                    `}
-                >
-                    {!isCollapsed && t("logout")}
-                    <LogOut className="h-4 w-4" />
-                </Button>
+                <DialogDemo loading={islogout} submitButton={t("logout")} onClick={() => handleLogout()} title={`${isRTL ? "هل انت متاكد من تسجيل الخروج!" : "Are you sure you logout!"}`} description={`${isRTL ? "لو سجلت الخروج، ستحتاج لتسجيل الدخول مرة اخرى" : "If you logout, you'll need to log in again."}`}
+                    children={
+                        <Button className={`
+                        w-full ${isCollapsed ? "justify-center px-2" : ""}`} variant={"destructive"}>
+                            {!isCollapsed && t("logout")}
+                            <LogOut className="h-4 w-4" />
+                        </Button>
+                    } />
             </SidebarFooter>
         </Sidebar >
     );

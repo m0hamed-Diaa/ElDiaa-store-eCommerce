@@ -108,9 +108,12 @@ export interface IHeroSlide {
 
   discountOnly?: boolean;
 
+  discount?: number | null;
+
   customUrl?: string | null;
 
   image: {
+    id: number;
     url: string;
     width?: number;
     height?: number;

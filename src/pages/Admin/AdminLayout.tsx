@@ -19,7 +19,7 @@ export default function AdminLayout() {
             <SidebarInset className="overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
                 {/* HEADER */}
                 <header className="flex h-16 items-center gap-4 border-b px-2">
-                    <SidebarTrigger />
+                    <SidebarTrigger title="Ctrl+B" />
                 </header>
                 {/* PAGE CONTENT */}
                 <main className="min-h-screen md:p-5">

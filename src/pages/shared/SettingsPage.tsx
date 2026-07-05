@@ -52,7 +52,7 @@ export default function SettingsPage() {
         removeAuth();
         localStorage.removeItem("rememberedEmail");
         toast.success(t("logoutMessage"));
-        navigate("/", { replace: true })
+        navigate(isAdmin ? "/admin" : "/", { replace: true })
     }
 
     if (isProfileLoading) {
@@ -70,7 +70,6 @@ export default function SettingsPage() {
     return (
         <div className="min-h-screen bg-background text-foreground">
             <div className="container mx-auto px-4 py-8">
-
                 {/* Header */}
                 <div className="mb-10">
                     <h1 className="text-4xl font-bold tracking-tight">

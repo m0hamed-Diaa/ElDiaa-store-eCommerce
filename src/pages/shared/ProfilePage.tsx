@@ -219,7 +219,7 @@ export default function ProfilePage() {
 
 
   return (
-    <section className="container mx-auto max-w-5xl p-8">
+    <section className="container mx-auto max-w-5xl p-3">
       <Card className="overflow-hidden border-border p-0 shadow-lg">
         {/* Cover */}
         <div className="h-40 bg-linear-to-r from-primary via-primary/90 to-primary/70" />

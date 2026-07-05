@@ -16,6 +16,8 @@
   "welcomeBack": "مرحبًا.تسجيل الدخول",
   "welcomeBackTitle": "الحساب والقوائم",
   "welcomeBackContent": "سجل الدخول إلى حسابك لمواصلة التسوق.",
+  "welcomeAdminBack": "مرحبًا الادمن. تسجيل الدخول",
+  "welcomeBackAdminContent": "سجل الدخول إلى حسابك الإداري لمواصلة إدارة المتجر.",
   "yourAccount": "حسابك",
   "yourAddress": "عنوانك",
   "login": "تسجيل الدخول",
