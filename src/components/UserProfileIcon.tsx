@@ -11,21 +11,20 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@/app/hooks";
-import { selectLang } from "@/app/features/language/languageSlice";
-import { Link, useNavigate } from "react-router-dom";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { Skeleton } from "./ui/skeleton";
+import { useLocale } from "@/lib/useLocale";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
+import { AppLink } from "./paths/AppLink";
 
 interface IUserProps {
     allowedRole?: "user" | "admin";
 }
 
 const UserProfileIcon = ({ allowedRole }: IUserProps) => {
-    const navigate = useNavigate();
+    const localeNavigate = useLocaleNavigate();
     const { t } = useTranslation("common");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     // Go to currentPage
     const { saveCurrentPage } =
         useAuthRedirect();
@@ -55,7 +54,7 @@ const UserProfileIcon = ({ allowedRole }: IUserProps) => {
         removeAuth();
         localStorage.removeItem("rememberedEmail");
         toast.success(t("logoutMessage"));
-        navigate("/", { replace: true })
+        localeNavigate("/");
     }
     if (isProfileLoading || isLoading) {
         return (<Skeleton className="h-9 w-9 rounded-full" />)
@@ -86,25 +85,25 @@ const UserProfileIcon = ({ allowedRole }: IUserProps) => {
                                             </p>
                                             <Separator className="my-2" />
                                             <li>
-                                                <Link to={settingsBasePath}>
+                                                <AppLink to={settingsBasePath}>
                                                     <Button variant={"secondary"} fullWidth className="text-white text-sm mb-2">
                                                         {t("settings")} <CiSettings />
                                                     </Button>
-                                                </Link>
+                                                </AppLink>
                                             </li>
                                             <li>
-                                                <Link to={`${settingsBasePath}/profile`}>
+                                                <AppLink to={`${settingsBasePath}/profile`}>
                                                     <Button variant={"secondary"} fullWidth className="text-white text-sm mb-2">
                                                         {t("profile")} <GoPerson />
                                                     </Button>
-                                                </Link>
+                                                </AppLink>
                                             </li>
                                             <li>
-                                                <Link to={`${settingsBasePath}/profile/change-password`}>
+                                                <AppLink to={`${settingsBasePath}/profile/change-password`}>
                                                     <Button variant={"secondary"} fullWidth className="text-white text-sm mb-2">
                                                         {t("changePassword")} <FaExchangeAlt />
                                                     </Button>
-                                                </Link>
+                                                </AppLink>
                                             </li>
                                             <li>
                                                 <DialogDemo loading={islogout} submitButton={t("logout")} onClick={() => handleLogout()} title={`${isRTL ? "هل انت متاكد من تسجيل الخروج!" : "Are you sure you logout!"}`} description={`${isRTL ? "لو سجلت الخروج، ستحتاج لتسجيل الدخول مرة اخرى" : "If you logout, you'll need to log in again."}`} children={<Button fullWidth variant={"destructive"}>
@@ -130,19 +129,19 @@ const UserProfileIcon = ({ allowedRole }: IUserProps) => {
                             <NavigationMenuContent className="bg-accent z-50">
                                 <ul className="w-58">
                                     <li className="flex items-center justify-center">
-                                        <Link to={loginPath} onClick={saveCurrentPage}>
+                                        <AppLink to={loginPath} onClick={saveCurrentPage}>
                                             <Button variant="link" className="w-fit text-white">
                                                 {t("login")}
                                             </Button>
-                                        </Link>
+                                        </AppLink>
                                     </li>
                                     {!isAdmin && (<li className="flex items-center">
                                         <p>{t("dontHaveAccount")}</p>
-                                        <Link to={registerPath} onClick={saveCurrentPage}>
+                                        <AppLink to={registerPath} onClick={saveCurrentPage}>
                                             <Button variant="link" className="w-fit mx-auto text-white">
                                                 {t("register")}
                                             </Button>
-                                        </Link>
+                                        </AppLink>
                                     </li>)}
                                 </ul>
                             </NavigationMenuContent>

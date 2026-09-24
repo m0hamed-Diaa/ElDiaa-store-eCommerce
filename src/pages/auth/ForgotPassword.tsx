@@ -14,13 +14,12 @@ import {
 import { Input } from "@/components/ui/input";
 import AuthLayout from "./AuthLayout";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@/app/hooks";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { useForgotPasswordMutation } from "@/app/users/authApi";
-import { Navigate } from "react-router-dom";
 import { getAuth } from "@/lib/authCookies";
+import { Navigate } from "react-router-dom";
+import { useLocale } from "@/lib/useLocale";
 
 const createResetSchema = (isRTL: boolean) => z.object({
     email: z
@@ -33,8 +32,7 @@ export default function ForgotPasswordPage() {
         return <Navigate to="/" replace />;
     }
     const { t } = useTranslation("common");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
 
     const resetSchema =
         createResetSchema(isRTL);

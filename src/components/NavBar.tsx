@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import { memo } from "react";
 import diaaLogo from "@/assets/diaa-logo.png";
 import { useTranslation } from "react-i18next";
@@ -10,7 +8,6 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
-import { selectLang } from "@/app/features/language/languageSlice";
 import { ShoppingCart } from "lucide-react";
 
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
@@ -23,11 +20,12 @@ import LanguageToggle from "./ui/LanguageToggle";
 import MobileNavbarMenu from "./MobileNavbarMenu";
 import { toast } from "sonner";
 import UserProfileIcon from "./UserProfileIcon";
+import { useLocale } from "@/lib/useLocale";
+import { AppLink } from "./paths/AppLink";
 
 const Navbar = () => {
     const { t } = useTranslation("common");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL, lang } = useLocale();
     const { data } = useGetCategoriesQuery({ lang });
     const cartItems = useAppSelector(selectCartItems);
     const dispatch = useAppDispatch();
@@ -35,10 +33,10 @@ const Navbar = () => {
         <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
             <div className="container mx-auto px-4 flex h-16 items-center justify-between">
                 {/* Logo */}
-                <Link to="/" className="flex items-center gap-2 text-primary">
+                <AppLink to="/" className="flex items-center gap-2 text-primary">
                     <img src={diaaLogo} className="w-12 rounded-full" alt="Logo" />
                     {t("appName")}
-                </Link>
+                </AppLink>
 
                 {/* Desktop Nav */}
                 <div className="hidden md:flex items-center gap-4 transition-all duration-300">
@@ -50,29 +48,29 @@ const Navbar = () => {
                                 <NavigationMenuContent className="bg-primary z-50">
                                     <ul className="w-40">
                                         <li>
-                                            <Link to="/" className="block rounded-md p-2 hover:bg-(--primary-hover)">
+                                            <AppLink to="/" className="block rounded-md p-2 hover:bg-(--primary-hover)">
                                                 {t("home")}
-                                            </Link>
+                                            </AppLink>
                                         </li>
                                         <li>
-                                            <Link to="/products" className="block rounded-md p-2 hover:bg-(--primary-hover)">
+                                            <AppLink to="/products" className="block rounded-md p-2 hover:bg-(--primary-hover)">
                                                 {t("products")}
-                                            </Link>
+                                            </AppLink>
                                         </li>
                                         <li>
-                                            <Link to="/about" className="block rounded-md p-2 hover:bg-(--primary-hover)">
+                                            <AppLink to="/about" className="block rounded-md p-2 hover:bg-(--primary-hover)">
                                                 {t("about")}
-                                            </Link>
+                                            </AppLink>
                                         </li>
                                         <li>
-                                            <Link to="/contact" className="block rounded-md p-2 hover:bg-(--primary-hover)">
+                                            <AppLink to="/contact" className="block rounded-md p-2 hover:bg-(--primary-hover)">
                                                 {t("contact")}
-                                            </Link>
+                                            </AppLink>
                                         </li>
                                         <li>
-                                            <Link to="/settings" className="block rounded-md p-2 hover:bg-(--primary-hover)">
+                                            <AppLink to="/settings" className="block rounded-md p-2 hover:bg-(--primary-hover)">
                                                 {t("settings")}
-                                            </Link>
+                                            </AppLink>
                                         </li>
                                     </ul>
                                 </NavigationMenuContent>
@@ -91,16 +89,16 @@ const Navbar = () => {
                                             data?.data?.length ?
                                                 <>
                                                     <li>
-                                                        <Link to={`/products`} className="block rounded-md p-2 hover:bg-(--primary-hover)">
+                                                        <AppLink to={`/products`} className="block rounded-md p-2 hover:bg-(--primary-hover)">
                                                             {t("all")}
-                                                        </Link>
+                                                        </AppLink>
                                                     </li>
                                                     {data?.data?.map((cat: StrapiCategory) => {
                                                         return (
                                                             <li key={cat.id}>
-                                                                <Link to={`/products?category=${cat.documentId}`} className="block rounded-md p-2 hover:bg-(--primary-hover)">
+                                                                <AppLink to={`/products?category=${cat.documentId}`} className="block rounded-md p-2 hover:bg-(--primary-hover)">
                                                                     {cat.title}
-                                                                </Link>
+                                                                </AppLink>
                                                             </li>
                                                         )
                                                     })}

@@ -2,10 +2,10 @@ import { ArrowUpDown, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { useTranslation } from "react-i18next";
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { useNavigate } from "react-router-dom";
 import { openDialogAdmin } from "@/app/admin/uiDialogSlice";
+import { useLocale } from "@/lib/useLocale";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
+import { useAppDispatch } from "@/app/hooks";
 
 interface DropdownMenuActionsProps {
     documentId: string;
@@ -15,10 +15,9 @@ interface DropdownMenuActionsProps {
 
 const DropdownMenuActions = ({ documentId, productLang, updatePath }: DropdownMenuActionsProps) => {
     const { t } = useTranslation("adminCommon");
-    const lang = useAppSelector(selectLang);
+    const { isRTL } = useLocale();
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-    const isRTL = lang === "ar";
+    const localeNavigate = useLocaleNavigate();
 
     return (
         <DropdownMenu key={documentId}>
@@ -32,7 +31,7 @@ const DropdownMenuActions = ({ documentId, productLang, updatePath }: DropdownMe
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="bg-background/95 backdrop-blur-x cursor-pointer">
-                <DropdownMenuItem onClick={() => navigate(`${updatePath}${documentId}?lang=${productLang}`)} className={`flex items-center justify-${isRTL ? "end" : "start"}`}>
+                <DropdownMenuItem onClick={() => localeNavigate(`${updatePath}${documentId}?lang=${productLang}`)} className={`flex items-center justify-${isRTL ? "end" : "start"}`}>
                     <Pencil className="mr-2 h-4 w-4" />
                     {t("edit")}
                 </DropdownMenuItem>

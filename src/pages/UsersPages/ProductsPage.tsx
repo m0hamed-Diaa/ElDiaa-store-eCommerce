@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@/app/hooks";
-import type { RootState } from "@/app/store";
 import ProductCard from "@/components/ProductCard";
 import type { IProduct } from "@/interfaces";
 import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeleton";
@@ -12,6 +10,7 @@ import { useGetProductsQuery } from "@/app/products/user/productsApi";
 import SelectComponent from "@/components/shared/SelectSorting";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePageTitle } from "@/components/usePageTitle";
+import { useLocale } from "@/lib/useLocale";
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
@@ -19,8 +18,7 @@ const ProductsPage = () => {
   const discount = searchParams.get("discount");
 
   const { t } = useTranslation("products");
-  const lang = useAppSelector((state: RootState) => state.language.lang);
-  const isRTL = lang === "ar";
+  const { isRTL, lang } = useLocale();
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<"desc" | "asc">("desc");
   const [page, setPage] = useState(1);

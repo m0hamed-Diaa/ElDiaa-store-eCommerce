@@ -1,15 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { MapPin } from "lucide-react";
-import type { RootState } from "@/app/store";
-import { useSelector } from "react-redux";
 import { Skeleton } from "./ui/skeleton";
+import { useLocale } from "@/lib/useLocale";
 
 const ProfessionalMap = () => {
     const [loadMap, setLoadMap] = useState(false);
     const [visible, setVisible] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    const lang = useSelector((state: RootState) => state.language.lang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
+    
     useEffect(() => {
         const element = ref.current;
         if (!element) return;

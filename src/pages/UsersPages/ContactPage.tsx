@@ -1,23 +1,19 @@
-// src/pages/UsersPages/ContactPage.tsx
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useSelector } from "react-redux";
 import {
   Mail,
   Phone,
   SendHorizonal,
 } from "lucide-react";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { useTranslation } from "react-i18next";
 import companyLogo from "@/assets/mohamedDiaa-logo.png";
 import { usePageTitle } from "@/components/usePageTitle";
+import { useLocale } from "@/lib/useLocale";
 
 const ContactPage = () => {
-  const lang = useSelector(selectLang);
-  const isRTL = lang === "ar";
+  const { isRTL } = useLocale();
   const { t } = useTranslation("contact");
   usePageTitle("التواصل | متجر الضياء للإلكترونيات", "Contact | El-diaa Store For Electronics")
 

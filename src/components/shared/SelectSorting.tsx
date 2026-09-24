@@ -1,6 +1,5 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAppSelector } from "@/app/hooks";
-import type { RootState } from "@/app/store";
+import { useLocale } from "@/lib/useLocale";
 
 interface IProps {
     sort: "asc" | "desc";
@@ -9,8 +8,7 @@ interface IProps {
 }
 
 const SelectComponent = ({ sort, onChangeSort, disabled }: IProps) => {
-    const lang = useAppSelector((state: RootState) => state.language.lang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     return (
         <Select value={sort}
             onValueChange={(value: "asc" | "desc") =>

@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useSelector } from "react-redux";
 import {
   ShieldCheck,
   Truck,
@@ -8,16 +7,15 @@ import {
   Smartphone,
 } from "lucide-react";
 import { FaShoppingBasket } from "react-icons/fa";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { useTranslation } from "react-i18next";
 import IframeMap from "@/components/IframeMap";
-import { Link } from "react-router-dom";
 import diaaLogo from "@/assets/diaa-logo.png";
 import { usePageTitle } from "@/components/usePageTitle";
+import { AppLink } from "@/components/paths/AppLink";
+import { useLocale } from "@/lib/useLocale";
 
 const AboutPage = () => {
-  const lang = useSelector(selectLang);
-  const isRTL = lang === "ar";
+  const { isRTL } = useLocale();
   const { t } = useTranslation("about");
   usePageTitle("الأعدادات | متجر الضياء للإلكترونيات", "Settings | El-diaa Store For Electronics")
 
@@ -47,10 +45,10 @@ const AboutPage = () => {
             <Button
               className="rounded-xl text-white w-full md:w-fit"
             >
-              <Link to={"/products"} className="flex items-center gap-2">
+              <AppLink to={"/products"} className="flex items-center gap-2">
                 {t("exploreProducts")}
                 <FaShoppingBasket className="animate-bounce" />
-              </Link>
+              </AppLink>
             </Button>
           </div>
         </div>

@@ -23,7 +23,6 @@ import internetSlice from "./features/Internet/internetSlice";
 import cartReducer from "./features/cartSlice";
 import uiSlice from "./features/uiSlice";
 import heartSlice from "./features/heartSlice";
-import languageSlice from "./features/language/languageSlice";
 import { productsApi } from "./products/user/productsApi";
 import { heroSlideApi } from "./hero-slides/user/heroSlice";
 import { categoryApi } from "./categories/user/categoryApi";
@@ -44,7 +43,6 @@ const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
 
 export const store = configureStore({
     reducer: {
-        language: languageSlice,
         internet: internetSlice,
         cart: persistedCartReducer,
         ui: uiSlice,

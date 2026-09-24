@@ -3,20 +3,18 @@ import { Button } from "../components/ui/button";
 import { useTranslation } from "react-i18next";
 import diaaLogo from "@/assets/diaa-logo.png";
 import { FaHome } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { selectLang } from "@/app/features/language/languageSlice";
+import { useLocale } from "@/lib/useLocale";
 
 const PageNotFound = () => {
   const location = useLocation();
+  const { t } = useTranslation("common");
+  const { isRTL, lang } = useLocale();
 
   const homePath =
     location.pathname.startsWith("/admin")
-      ? "/admin"
-      : "/";
+      ? `/${lang}/admin`
+      : `/${lang}/`;
 
-  const { t } = useTranslation("common");
-  const lang = useSelector(selectLang);
-  const isRTL = lang === "ar";
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-950 dark:to-indigo-950 p-4">

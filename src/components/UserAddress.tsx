@@ -1,5 +1,3 @@
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppSelector } from "@/app/hooks";
 import { useAddCustomerMutation, useGetCustomerByUserQuery, useGetProfileQuery, useUpdateCustomerMutation, useUpdateProfileMutation } from "@/app/users/profileApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,6 +14,7 @@ import { MdBrowserUpdated } from "react-icons/md";
 import { FaAddressCard } from "react-icons/fa";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import { useLocale } from "@/lib/useLocale";
 
 
 
@@ -108,8 +107,7 @@ interface IProps {
 }
 const UserAddress = ({ mode }: IProps) => {
     const { t } = useTranslation("settings");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     // User Data
     const userLoggedIn = getAuth();
     // User Profile Data
@@ -220,7 +218,7 @@ const UserAddress = ({ mode }: IProps) => {
             );
         }
     };
-    
+
     if (isCustomerLoading || isProfileLoading) {
         return (
             <div className="p-4">

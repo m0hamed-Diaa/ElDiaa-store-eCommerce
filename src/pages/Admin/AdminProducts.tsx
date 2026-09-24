@@ -9,24 +9,24 @@ import { DataTable } from "@/components/shared/DataTable";
 import { useTranslation } from "react-i18next";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import { useDeleteProductMutation, useGetProductsQuery } from "@/app/products/admin/productsApi";
-import { selectLang, toggleLanguage } from "@/app/features/language/languageSlice";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import PaginationDemo from "@/components/shared/PaginationDemo";
 import DropdownMenuActions from "@/components/shared/DropdownMenuActions";
 import { formatTimeAgo } from "@/utils";
 import FilteringComponent from "@/components/shared/Filtering";
-import { useNavigate } from "react-router-dom";
 import AdminProductsSkeleton from "@/components/admin/skeletons/AdminProductsSkeleton";
 import { usePageTitle } from "@/components/usePageTitle";
 import { DialogDemo } from "@/components/shared/DialogDemo";
 import { closeDialogAdmin, selectIsDialogOpen, toggleDialogAdmin } from "@/app/admin/uiDialogSlice";
 import { toast } from "sonner";
+import { useLocale } from "@/lib/useLocale";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
 
 export default function AdminProductsPage() {
-  const navigate = useNavigate();
+  const localeNavigate =
+    useLocaleNavigate();
   const { t } = useTranslation("adminProducts");
-  const lang = useAppSelector(selectLang);
-  const isRTL = lang === "ar";
+  const { isRTL, lang, changeLanguage } = useLocale();
   const [search, setSearch] = useState("");
   const [Lang, setLang] = useState<"ar" | "en">(lang);
   const [sort, setSort] = useState<
@@ -50,10 +50,10 @@ export default function AdminProductsPage() {
           ? "تم حذف المنتج بنجاح"
           : "Product deleted successfully"
       );
-      dispatch(toggleLanguage());
+      changeLanguage(lang === "ar" ? "en" : "ar")
       await DeleteProduct(documentId).unwrap();
       setDeleteDocumentId("");
-      dispatch(toggleLanguage());
+      changeLanguage(lang === "ar" ? "en" : "ar")
       dispatch(closeDialogAdmin());
     } catch {
       toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
@@ -82,7 +82,7 @@ export default function AdminProductsPage() {
         </div>
 
         {/* Adding product */}
-        <Button onClick={() => navigate("/admin/products/create")}>
+        <Button onClick={() => localeNavigate("/admin/products/create")}>
           {t("addProduct")}
           <Plus className="mr-2 h-4 w-4" />
         </Button>
@@ -158,8 +158,8 @@ export default function AdminProductsPage() {
                     <div className="flex flex-col">
                       <Badge variant="destructive" className="p-4">
                         {isRTL
-                          ? <>{`الترجمة الناقصة: ${isArabicLang}`}: <Button variant={"link"} className="p-0" onClick={() => navigate(`/admin/products/create`)}>اضافة</Button></>
-                          : <>{`Missing translation: ${isArabicLang}`}: <Button variant={"link"} className="p-0" onClick={() => navigate(`/admin/products/create`)}>Create</Button></>
+                          ? <>{`الترجمة الناقصة: ${isArabicLang}`}: <Button variant={"link"} className="p-0" onClick={() => localeNavigate(`/admin/products/create`)}>اضافة</Button></>
+                          : <>{`Missing translation: ${isArabicLang}`}: <Button variant={"link"} className="p-0" onClick={() => localeNavigate(`/admin/products/create`)}>Create</Button></>
                         }
                       </Badge>
                     </div>

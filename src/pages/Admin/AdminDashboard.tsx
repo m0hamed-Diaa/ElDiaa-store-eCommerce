@@ -5,11 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
 import UserProfileIcon from "@/components/UserProfileIcon";
+import { useLocale } from "@/lib/useLocale";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
 export default function AdminDashboard() {
   const { t } = useTranslation("adminDashboard");
+  const { lang } = useLocale();
 
   const stats = [
     {
@@ -212,7 +214,7 @@ export default function AdminDashboard() {
                         {order.status === 'completed' ? <Badge variant="default">{t(order.status)}</Badge> : <Badge variant="destructive">{t(order.status)}</Badge>}
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenuActions documentId={order.orderId} />
+                        <DropdownMenuActions documentId={order.orderId} productLang={lang} updatePath={""} />
                       </TableCell>
                     </TableRow>
                   ))}

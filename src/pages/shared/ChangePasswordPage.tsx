@@ -16,14 +16,13 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@/app/hooks";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { useChangePasswordMutation } from "@/app/users/profileApi";
-import { useNavigate } from "react-router-dom";
 import { removeAuth } from "@/lib/authCookies";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { usePageTitle } from "@/components/usePageTitle";
+import { useLocale } from "@/lib/useLocale";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
 
 const ChangePasswordSchema = (
     isRTL: boolean
@@ -71,10 +70,10 @@ const ChangePasswordSchema = (
 
 
 export default function ChangePasswordPage() {
-    const navigate = useNavigate();
+    const localeNavigate =
+        useLocaleNavigate();
     const { t } = useTranslation("common");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     usePageTitle("تغيير الباسورد | متجر الضياء للإلكترونيات", "change Password | El-diaa Store For Electronics")
 
     // show current password
@@ -130,7 +129,7 @@ export default function ChangePasswordPage() {
             localStorage.removeItem("rememberedEmail");
             // Go to Login Page
             setTimeout(() => {
-                navigate("/login");
+                localeNavigate("/login");
             }, 1000);
 
             toast.success(
@@ -190,7 +189,7 @@ export default function ChangePasswordPage() {
                                     )
                                 }
                             >
-                                {showPassword ? (
+                                {showCurrentPassword ? (
                                     <EyeOff size={18} />
                                 ) : (
                                     <Eye size={18} />

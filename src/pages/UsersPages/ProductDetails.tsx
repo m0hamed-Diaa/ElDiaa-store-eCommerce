@@ -1,18 +1,16 @@
-import { useAppSelector } from "@/app/hooks";
 import { useGetSingleProductQuery } from "@/app/products/user/productsApi";
-import type { RootState } from "@/app/store";
 import ProductCard from "@/components/ProductCard";
 import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeleton";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePageTitle } from "@/components/usePageTitle";
+import { useLocale } from "@/lib/useLocale";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ProductDetails = () => {
     const { documentId } = useParams();
-    const lang = useAppSelector((state: RootState) => state.language.lang);
-    const isRTL = lang === "ar";
+    const { isRTL, lang } = useLocale();
     const { data, isLoading } = useGetSingleProductQuery({ lang, documentId: documentId! })
     const product = data?.data;
     const navigate = useNavigate();

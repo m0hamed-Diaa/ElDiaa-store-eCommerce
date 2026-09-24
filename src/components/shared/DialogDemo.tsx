@@ -1,5 +1,3 @@
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppSelector } from "@/app/hooks";
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -14,6 +12,7 @@ import {
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "../ui/spinner";
+import { useLocale } from "@/lib/useLocale";
 
 interface IProps {
     children?: ReactNode;
@@ -29,8 +28,7 @@ interface IProps {
 }
 
 export function DialogDemo({ children, title, description, body, submitButton, onClick, formId, loading = false, open, setOpen }: IProps) {
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     const { t } = useTranslation("common");
 
     return (

@@ -5,12 +5,10 @@ import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-i
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { selectInternetStatus } from "@/app/features/Internet/internetSlice";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { useAppSelector } from "@/app/hooks";
 import ProductCard from "@/components/ProductCard";
 import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeleton";
 import type { IHeroSlide, IProduct, StrapiCategory } from "@/interfaces";
-import { Link } from "react-router-dom";
 import { useGetHeroSlidesQuery } from "@/app/hero-slides/user/heroSlice";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -18,10 +16,11 @@ import { formatTimeAgo } from "@/utils";
 import { useGetProductsQuery } from "@/app/products/user/productsApi";
 import { useGetCategoriesQuery } from "@/app/categories/user/categoryApi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AppLink } from "@/components/paths/AppLink";
+import { useLocale } from "@/lib/useLocale";
 
 export default function HomePage() {
-  const lang = useAppSelector(selectLang);
-  const isRTL = lang === "ar";
+  const { isRTL, lang } = useLocale();
   const { t } = useTranslation("home");
   const [search, setSearch] = useState<string>("");
 
@@ -43,7 +42,7 @@ export default function HomePage() {
         return `${base}?category=${slide.category?.documentId}`;
 
       case "discount":
-        return `${base}?discount=true`;
+        return `${base}?discount=${slide.discount}`;
 
       case "custom":
         return slide?.customUrl || base;
@@ -74,22 +73,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className={`flex justify-center mt-2 md:mx-6 md:justify-start`}>
-        <Input
-          placeholder={t("inputSearch")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="
-            w-[90%]
-            md:w-[50%]
-            focus:h-12
-            rounded-xl
-            shadow-md
-            hover:shadow-lg
-            transition-all
-          "
-        />
-      </div>
 
       {/* Hero Swiper */}
       <div className={`relative group cursor-pointer p-4 md:p-6 ${isRTL ? "rtl" : "ltr"}`}>
@@ -165,7 +148,7 @@ export default function HomePage() {
         >
           {dataHero?.data?.map((p: IHeroSlide) => (
             <SwiperSlide key={p.id}>
-              <Link to={`${getHeroLink(p)}`}
+              <AppLink to={`${getHeroLink(p)}`}
                 className={`
                 h-80 rounded-3xl bg-primary p-6
                 flex flex-col-reverse items-center justify-around  gap-6
@@ -198,12 +181,29 @@ export default function HomePage() {
                   </p>
                 </div>
                 <span className={`absolute top-2 ${isRTL ? "right-2" : "left-2"}`}>{formatTimeAgo(p.createdAt, `${lang}`)}</span>
-              </Link>
+              </AppLink>
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
 
+      <div className={`flex justify-center mt-2 md:mx-6 md:justify-start`}>
+        <Input
+          placeholder={t("inputSearch")}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="
+            w-[90%]
+            md:w-[50%]
+            focus:h-12
+            rounded-xl
+            shadow-md
+            hover:shadow-lg
+            transition-all
+          "
+        />
+      </div>
+      
       {/* Products */}
       <section className="px-4 py-10 md:px-6">
         <div className="mb-8 flex items-center justify-between">
@@ -252,11 +252,11 @@ export default function HomePage() {
           )
         }) : <div className="text-center mt-8 text-destructive">{t("noDataFound")} {t("forCategories")}</div>}
 
-        <Link to="/products">
+        <AppLink to="/products">
           <Button variant="outline" className="mt-5">
             {t("viewAll")}
           </Button>
-        </Link>
+        </AppLink>
       </section>
     </div>
   )

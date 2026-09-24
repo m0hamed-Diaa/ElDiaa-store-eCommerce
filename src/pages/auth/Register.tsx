@@ -2,10 +2,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import {
   Card,
   CardContent,
@@ -13,26 +11,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import {
   Field,
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
-
 import { toast } from "sonner";
 import { useRegisterMutation } from "@/app/users/authApi";
 import AuthLayout from "./AuthLayout";
 import { useTranslation } from "react-i18next";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useAppSelector } from "@/app/hooks";
-import { selectLang } from "@/app/features/language/languageSlice";
-
+import { Navigate } from "react-router-dom";
 import { z } from "zod";
-import { getAuth, saveAuth } from "@/lib/authCookies";
+import { getAuth } from "@/lib/authCookies";
 import { Separator } from "@/components/ui/separator";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { Spinner } from "@/components/ui/spinner";
+import { useLocale } from "@/lib/useLocale";
+import { AppLink } from "@/components/paths/AppLink";
 
 export const createRegisterSchema = (
   isRTL: boolean
@@ -85,21 +80,16 @@ export const createRegisterSchema = (
       }
     );
 
-
-
-
 export default function RegisterPage() {
+  const { isRTL, lang } = useLocale();
   if (getAuth()?.token) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={`/${lang}`} replace />;
   }
-  const navigate = useNavigate();
   // Got to CurrentPage
   const { saveCurrentPage } =
     useAuthRedirect();
 
   const { t } = useTranslation("common");
-  const lang = useAppSelector(selectLang);
-  const isRTL = lang === "ar";
 
   const [showPassword, setShowPassword] =
     useState(false);
@@ -117,6 +107,12 @@ export default function RegisterPage() {
     useForm<RegisterValues>({
       resolver:
         zodResolver(registerSchema),
+      defaultValues: {
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      }
     });
 
 
@@ -125,51 +121,28 @@ export default function RegisterPage() {
   ) => {
     try {
       // Register
-      const res = await register({
+      await register({
         username: values.username,
         email: values.email,
         password: values.password,
       }).unwrap();
 
-      // Save Auth
-      saveAuth({
-        token: res.jwt,
-        userId: res.user.id,
-        role:
-          res.user.accountType ??
-          "user",
-      });
-
       toast.success(
         isRTL
-          ? "تم إنشاء الحساب بنجاح"
-          : "Account created successfully"
+          ? "تم إنشاء الحساب، تحقق من بريدك لتأكيد الحساب"
+          : "Account created, please check your email to confirm"
       );
-
-      const redirectTo =
-        sessionStorage.getItem(
-          "redirectAfterAuth"
-        ) || "/";
-
-      sessionStorage.removeItem(
-        "redirectAfterAuth"
-      );
-
-      navigate(redirectTo, {
-        replace: true,
-      });
 
     } catch (error: any) {
-
+      const status = error?.data?.error?.status;
       const message =
         error?.data?.error?.message ||
         error?.data?.message ||
         "";
 
       if (
-        message
-          .toLowerCase()
-          .includes("already")
+        status === 400 &&
+        message.toLowerCase().includes("already taken")
       ) {
         toast.error(
           isRTL
@@ -182,11 +155,12 @@ export default function RegisterPage() {
 
       toast.error(
         isRTL
-          ? "فشل في إنشاء الحساب"
-          : "Failed to create account"
+          ? "حدث خطأ في الخادم، حاول مرة أخرى لاحقا"
+          : "Server error, please try again later"
       );
     }
   };
+
   return (
     <AuthLayout>
       <Card className="w-full max-w-md">
@@ -221,6 +195,7 @@ export default function RegisterPage() {
 
                   <Input
                     {...field}
+                    disabled={isLoading}
                     placeholder={`${isRTL ? "ادخل اسمك كاملا..." : "Enter you full name..."}`}
                   />
 
@@ -249,6 +224,7 @@ export default function RegisterPage() {
 
                   <Input
                     {...field}
+                    disabled={isLoading}
                     placeholder={`${isRTL ? "ادخل إيميلك..." : "Enter you email..."}`}
                   />
 
@@ -278,6 +254,7 @@ export default function RegisterPage() {
                   <div className="relative">
                     <Input
                       {...field}
+                      disabled={isLoading}
                       placeholder={`${isRTL ? "ادخل رقم سري قوى..." : "Enter strong password..."}`}
 
                       type={
@@ -330,6 +307,7 @@ export default function RegisterPage() {
                   <div className="relative">
                     <Input
                       {...field}
+                      disabled={isLoading}
                       placeholder={`${isRTL ? "أكد رقمك السري..." : "Confirm your password..."}`}
                       type={
                         showPassword
@@ -382,13 +360,13 @@ export default function RegisterPage() {
             <Separator />
             <div className="flex items-center gap-2">
               <p>{t("alreadyHaveAccount")}</p>
-              <Link
+              <AppLink
                 to="/login"
                 onClick={saveCurrentPage}
                 className="text-primary"
               >
                 {t("login")}
-              </Link>
+              </AppLink>
             </div>
           </form>
         </CardContent>

@@ -29,7 +29,7 @@ export const productsApi = createApi({
                     : "";
 
                 const discountFilter = discount
-                    ? `&filters[discount][$gt]=0`
+                    ? `&filters[discount][$gt]=${discount}`
                     : "";
 
 

@@ -1,6 +1,5 @@
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppSelector } from "@/app/hooks";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useLocale } from "@/lib/useLocale";
 
 interface IProps {
     openAlertDilaog: boolean;
@@ -10,8 +9,7 @@ interface IProps {
 }
 
 const AlertAdminDilaog = ({ openAlertDilaog, handleUpdateClose, handleUpdateConfirm, nextLanguage }: IProps) => {
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     const nextLanguageShow = nextLanguage === "ar" ? isRTL ? "العربى" : "Arabic" : isRTL ? "الانجليزى" : "English"
 
     return (

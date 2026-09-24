@@ -1,5 +1,3 @@
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppSelector } from "@/app/hooks";
 import {
     AlertDialog,
     AlertDialogContent,
@@ -8,7 +6,7 @@ import {
     AlertDialogDescription,
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-
+import i18n from "@/lib/i18n";
 interface IProps {
     open: boolean;
     type: string;
@@ -16,8 +14,7 @@ interface IProps {
 
 export function SessionExpiredDialog({ open, type }: IProps) {
 
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const isRTL = i18n.language === "ar";
 
     return (
         <AlertDialog open={open}>

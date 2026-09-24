@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FaStar, FaRegStar, FaHeart, FaShoppingBasket } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/app/store";
 import { useTranslation } from "react-i18next";
 import type { IProduct } from "@/interfaces";
 import { FcViewDetails } from "react-icons/fc";
@@ -11,8 +9,9 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { openCartDrawer } from "@/app/features/uiSlice";
 import { toast } from "sonner";
 import { selectIsHeart, toggleHeart } from "@/app/features/heartSlice";
-import { Link } from "react-router-dom";
 import { formatTimeAgo } from "@/utils";
+import { useLocale } from "@/lib/useLocale";
+import { AppLink } from "./paths/AppLink";
 
 interface IProps {
     p: IProduct;
@@ -26,8 +25,7 @@ export default function ProductCard({ p, showActions = true, isForDetails = fals
 
 
     const { t } = useTranslation("products");
-    const lang = useSelector((state: RootState) => state.language.lang);
-    const isRTL = lang === "ar";
+    const { isRTL, lang } = useLocale();
 
     const finalPrice = () => {
         return (
@@ -185,10 +183,10 @@ export default function ProductCard({ p, showActions = true, isForDetails = fals
                             {isForDetails ? <></>
                                 :
                                 <Button variant="outline" className="w-[50%] rounded-xl">
-                                    <Link to={`/products/${p.documentId}`} className="flex items-center gap-1">
+                                    <AppLink to={`/products/${p.documentId}`} className="flex items-center gap-1">
                                         {t("viewDetails")}
                                         <FcViewDetails className="animate-pulse" />
-                                    </Link>
+                                    </AppLink>
                                 </Button>
                             }
                         </div>

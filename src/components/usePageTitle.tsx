@@ -1,13 +1,11 @@
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppSelector } from "@/app/hooks";
+import { useLocale } from "@/lib/useLocale";
 import { useEffect } from "react";
 
 export const usePageTitle = (
     arTitle: string,
     enTitle: string
 ) => {
-    const lang = useAppSelector(selectLang);
-
+    const { lang } = useLocale();
     useEffect(() => {
         document.title =
             lang === "ar"

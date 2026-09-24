@@ -37,203 +37,212 @@ import CreateCategires from "@/pages/Admin/CreateCategory";
 import UpdateCategory from "@/pages/Admin/UpdateCategory";
 import UpdateBanner from "@/pages/Admin/UpdateBannerPage";
 import CreateBanner from "@/pages/Admin/CreateBanner";
+import EmailConfirmation from "@/pages/UsersPages/EmailConfirmation";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      {/* UserPages path */}
-      <Route path="/" element={<UserLayout />} errorElement={<ErrorHandler path={"/"} />}>
-        <Route
-          index
-          element={
-            <HomePage />
-          }
-        />
-        <Route
-          path="products"
-          element={
-            <ProductsPage />
-          }
-        />
-        <Route
-          path="products/:documentId"
-          element={
-            <ProductDetails />
-          }
-        />
-        <Route
-          path="about"
-          element={
-            <AboutPage />
-          }
-        />
-        <Route
-          path="contact"
-          element={
-            <ContactPage />
-          }
-        />
-        {/* Protected Routes */}
-        <Route element={<UserProtectedRoute />}>
-          <Route
-            path="/checkout"
-            element={
-              <Checkout />
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <SettingsPage />
-            }
-          />
-          <Route
-            path="/settings/profile"
-            element={
-              <ProfilePage />
-            }
-          />
-          <Route
-            path="/settings/profile/change-password"
-            element={
-              <ChangePasswordPage />
-            }
-          />
-        </Route>
-
-      </Route>
-      {/* Adminpages path */}
-      <Route element={<AdminProtectedRoute />}>
-        <Route path="/admin" element={<AdminLayout />} errorElement={<ErrorHandler path={"/admin"} />}>
+      {/* ============== Locale Route ============== */}
+      <Route path=":locale">
+        {/* ============== User Route ============== */}
+        <Route element={<UserLayout />} errorElement={<ErrorHandler path={"/"} />}>
           <Route
             index
             element={
-              <AdminDashboard />
+              <HomePage />
             }
           />
-
           <Route
             path="products"
             element={
-              <AdminProducts />
+              <ProductsPage />
             }
           />
           <Route
-            path="products/create"
+            path="products/:documentId"
             element={
-              <CreateProduct />
+              <ProductDetails />
             }
           />
           <Route
-            path="products/update/:documentId"
+            path="about"
             element={
-              <UpdateProduct />
+              <AboutPage />
             }
           />
+          <Route
+            path="contact"
+            element={
+              <ContactPage />
+            }
+          />
+          {/* Email Confirmation Route */}
+          <Route
+            path="email-confirmation"
+            element={<EmailConfirmation />}
+          />
+          {/* Protected Routes */}
+          <Route element={<UserProtectedRoute />}>
+            <Route
+              path="checkout"
+              element={
+                <Checkout />
+              }
+            />
+            <Route
+              path="settings"
+              element={
+                <SettingsPage />
+              }
+            />
+            <Route
+              path="settings/profile"
+              element={
+                <ProfilePage />
+              }
+            />
+            <Route
+              path="settings/profile/change-password"
+              element={
+                <ChangePasswordPage />
+              }
+            />
+          </Route>
 
-          <Route
-            path="categories"
-            element={
-              <AdminCategories />
-            }
-          />
-          <Route
-            path="categories/create"
-            element={
-              <CreateCategires />
-            }
-          />
-          <Route
-            path="categories/update/:documentId"
-            element={
-              <UpdateCategory />
-            }
-          />
-
-          <Route
-            path="hero-slides"
-            element={
-              <AdminHeroSlides />
-            }
-          />
-          <Route
-            path="hero-slides/create"
-            element={
-              <CreateBanner />
-            }
-          />
-          <Route
-            path="hero-slides/update/:documentId"
-            element={
-              <UpdateBanner />
-            }
-          />
-
-          <Route
-            path="orders"
-            element={
-              <OrdersPage />
-            }
-          />
-          <Route
-            path="users"
-            element={
-              <UsersPage />
-            }
-          />
-          <Route
-            path="reviews"
-            element={
-              <ReviewsPage />
-            }
-          />
-          <Route
-            path="coupons"
-            element={
-              <CouponsPage />
-            }
-          />
-          <Route
-            path="analytics"
-            element={
-              <AnalyticsPage />
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <SettingsPage />
-            }
-          />
-          <Route
-            path="settings/profile"
-            element={
-              <ProfilePage />
-            }
-          />
-          <Route
-            path="settings/profile/change-password"
-            element={
-              <ChangePasswordPage />
-            }
-          />
         </Route>
+        {/* ============== Admin Route ============== */}
+        <Route element={<AdminProtectedRoute />}>
+          <Route path="admin" element={<AdminLayout />} errorElement={<ErrorHandler path={"/admin"} />}>
+            <Route
+              index
+              element={
+                <AdminDashboard />
+              }
+            />
+
+            <Route
+              path="products"
+              element={
+                <AdminProducts />
+              }
+            />
+            <Route
+              path="products/create"
+              element={
+                <CreateProduct />
+              }
+            />
+            <Route
+              path="products/update/:documentId"
+              element={
+                <UpdateProduct />
+              }
+            />
+
+            <Route
+              path="categories"
+              element={
+                <AdminCategories />
+              }
+            />
+            <Route
+              path="categories/create"
+              element={
+                <CreateCategires />
+              }
+            />
+            <Route
+              path="categories/update/:documentId"
+              element={
+                <UpdateCategory />
+              }
+            />
+
+            <Route
+              path="hero-slides"
+              element={
+                <AdminHeroSlides />
+              }
+            />
+            <Route
+              path="hero-slides/create"
+              element={
+                <CreateBanner />
+              }
+            />
+            <Route
+              path="hero-slides/update/:documentId"
+              element={
+                <UpdateBanner />
+              }
+            />
+
+            <Route
+              path="orders"
+              element={
+                <OrdersPage />
+              }
+            />
+            <Route
+              path="users"
+              element={
+                <UsersPage />
+              }
+            />
+            <Route
+              path="reviews"
+              element={
+                <ReviewsPage />
+              }
+            />
+            <Route
+              path="coupons"
+              element={
+                <CouponsPage />
+              }
+            />
+            <Route
+              path="analytics"
+              element={
+                <AnalyticsPage />
+              }
+            />
+            <Route
+              path="settings"
+              element={
+                <SettingsPage />
+              }
+            />
+            <Route
+              path="settings/profile"
+              element={
+                <ProfilePage />
+              }
+            />
+            <Route
+              path="settings/profile/change-password"
+              element={
+                <ChangePasswordPage />
+              }
+            />
+          </Route>
+        </Route>
+
+        {/* ============== Auth Route ============== */}
+        <Route path="login" element={<LoginPage mode="user" />} />
+        <Route path="admin/login" element={<LoginPage mode="admin" />} />
+        <Route path="register" element={<RegisterPage />} />
+        <Route
+          path="forgot-password"
+          element={<ForgotPasswordPage />}
+        />
+        <Route
+          path="reset-password"
+          element={<ResetPasswordPage />}
+        />
       </Route>
 
-      {/* Auth Pages */}
-      <Route path="/login" element={<LoginPage mode="user" />} />
-      <Route path="/admin/login" element={<LoginPage mode="admin" />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route
-        path="/forgot-password"
-        element={<ForgotPasswordPage />}
-      />
-      <Route
-        path="/reset-password"
-        element={<ResetPasswordPage />}
-      />
-
-      {/* Page Not Found */}
+      {/* ============== Not Found 404 ============== */}
       <Route path="*" element={<PageNotFound />} />
     </>
   )

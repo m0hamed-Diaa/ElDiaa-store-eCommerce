@@ -1,6 +1,5 @@
 import { closeDialogAdmin, selectIsDialogOpen, toggleDialogAdmin } from "@/app/admin/uiDialogSlice";
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from "@/app/categories/admin/categoryApi";
-import { selectLang, toggleLanguage } from "@/app/features/language/languageSlice";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import AdminCategoriesSkeleton from "@/components/admin/skeletons/AdminCategoriesSkeleton";
 import StatCard from "@/components/admin/StatCard";
@@ -12,17 +11,18 @@ import PaginationDemo from "@/components/shared/PaginationDemo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
+import { useLocale } from "@/lib/useLocale";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function CategoriesPage() {
-    const navigate = useNavigate();
+    const localeNavigate =
+        useLocaleNavigate();
     const { t } = useTranslation("adminCategories");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL, lang, changeLanguage } = useLocale();
     const [Lang, setLang] = useState<"ar" | "en">(lang);
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState<
@@ -46,10 +46,10 @@ export default function CategoriesPage() {
                     ? "تم حذف الفئة بنجاح"
                     : "Category deleted successfully"
             );
-            dispatch(toggleLanguage());
+            changeLanguage(lang === "ar" ? "en" : "ar")
             await DeleteCategory(documentId).unwrap();
             setDeleteDocumentId("");
-            dispatch(toggleLanguage());
+            changeLanguage(lang === "ar" ? "en" : "ar")
             dispatch(closeDialogAdmin());
         } catch {
             toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
@@ -70,7 +70,7 @@ export default function CategoriesPage() {
                     {t("categories")}
                 </h1>
 
-                <Button onClick={() => navigate("/admin/categories/create")}>
+                <Button onClick={() => localeNavigate("/admin/categories/create")}>
                     {t("addCategory")}
                     <Plus />
                 </Button>

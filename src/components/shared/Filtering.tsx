@@ -5,8 +5,7 @@ import { Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import SelectComponent from './SelectSorting'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAppSelector } from "@/app/hooks";
-import type { RootState } from "@/app/store";
+import { useLocale } from "@/lib/useLocale";
 
 interface IProps {
     search: string;
@@ -21,10 +20,9 @@ interface IProps {
     disabled: boolean;
 }
 
-const FilteringComponent = ({ search, setSearch, sort, setSort, dataLength, translationKey, showLang = false, Lang, setLang, disabled }: IProps) => {
+const FilteringComponent = ({ search, setSearch, sort, setSort, dataLength, translationKey, Lang, setLang, disabled }: IProps) => {
     const { t } = useTranslation(translationKey);
-    const lang = useAppSelector((state: RootState) => state.language.lang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
 
     return (
         <Card className="rounded-2xl">
@@ -75,7 +73,6 @@ const FilteringComponent = ({ search, setSearch, sort, setSort, dataLength, tran
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
-                        
                     </div>
                 </div>
             </CardContent>

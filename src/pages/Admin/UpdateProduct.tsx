@@ -6,10 +6,8 @@ import { useUploadFilesMutation } from "@/app/features/Upload/uploadApi";
 import { useGetCategoriesQuery } from "@/app/categories/admin/categoryApi";
 import { useEffect, useRef, useState } from "react";
 import { useGetSingleProductQuery, useUpdateProductMutation } from "@/app/products/admin/productsApi";
-import { useAppSelector } from "@/app/hooks";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -19,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
 import AlertAdminDilaog from "@/components/admin/AlertDilaog";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
+import { useLocale } from "@/lib/useLocale";
 
 const UpdateProductSchema =
     (isRTL: boolean) =>
@@ -89,10 +89,10 @@ const UpdateProductSchema =
 const UpdateProduct = () => {
     const { documentId } = useParams();
     const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
+    const localeNavigate =
+        useLocaleNavigate();
     const { t } = useTranslation("adminProducts");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
 
     const currentProductLang =
         searchParams.get("lang") as "en" | "ar";
@@ -125,7 +125,7 @@ const UpdateProduct = () => {
             discount: product.discount,
         });
 
-        setThumbnailId(product.thumbnail.id);
+        setThumbnailId(product?.thumbnail?.id);
     }, [data]);
 
     // ======================== Update Product ===========================
@@ -270,7 +270,7 @@ const UpdateProduct = () => {
                 setOpenAlertDialog(true);
                 return;
             }
-            setTimeout(() => navigate("/admin/products"), 1500);
+            setTimeout(() => localeNavigate("/admin/products"), 1500);
 
         } catch {
             toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
@@ -281,7 +281,7 @@ const UpdateProduct = () => {
         setUpdateConfirmed(true);
         setOpenAlertDialog(false);
 
-        navigate(`/admin/products/update/${documentId}?lang=${nextLang}`);
+        localeNavigate(`/admin/products/update/${documentId}?lang=${nextLang}`);
     };
 
     const handleUpdateClose = () => {
@@ -303,7 +303,7 @@ const UpdateProduct = () => {
         });
 
         setNextLang("");
-        setTimeout(() => navigate("/admin/products"), 1500);
+        setTimeout(() => localeNavigate("/admin/products"), 1500);
     }
 
     if (isLoading) return <p className="text-primary">{isRTL ? "جار التحميل..." : "Loading..."}</p>
@@ -312,7 +312,7 @@ const UpdateProduct = () => {
         <div className="p-4">
             <div className="flex items-center justify-between">
                 <p className="font-bold">{isRTL ? `عدل المنتج الحالى ${data?.data?.title}` : `Update current product ${data?.data?.title}`}</p>
-                <Button variant={"secondary"} onClick={() => navigate("/admin/products")}>{t("backToProdPage")}</Button>
+                <Button variant={"secondary"} onClick={() => localeNavigate("/admin/products")}>{t("backToProdPage")}</Button>
             </div>
             <p>
                 {currentProductLang === "en"

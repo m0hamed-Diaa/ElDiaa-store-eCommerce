@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -19,11 +19,11 @@ import { useResetPasswordMutation } from "@/app/users/authApi";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@/app/hooks";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { getAuth } from "@/lib/authCookies";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { useLocale } from "@/lib/useLocale";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
 
 const createResetSchema = (isRTL: boolean) => z.object({
     password: z
@@ -49,13 +49,12 @@ const createResetSchema = (isRTL: boolean) => z.object({
 
 export default function ResetPasswordPage() {
     if (getAuth()?.token) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/ar/" replace />;
     }
     const { t } = useTranslation("common");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
 
-    const navigate = useNavigate();
+    const localeNavigate = useLocaleNavigate();
     const [searchParams] =
         useSearchParams();
     // show password 
@@ -101,7 +100,7 @@ export default function ResetPasswordPage() {
             }).unwrap();
             reset();
             toast.success(`${isRTL ? "كلمة المرور اتعدلت بنجاح" : "Password updated successfully"}`);
-            navigate("/login", { replace: true });
+            localeNavigate("/login");
         } catch {
             toast.error(
                 (isRTL

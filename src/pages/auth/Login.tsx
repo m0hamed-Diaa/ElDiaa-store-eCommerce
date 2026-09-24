@@ -1,6 +1,6 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
@@ -29,10 +29,11 @@ import { toast } from "sonner";
 import { useLoginMutation } from "@/app/users/authApi";
 import { getAuth, saveAuth } from "@/lib/authCookies";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "@/app/hooks";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { Spinner } from "@/components/ui/spinner";
 import AuthLayout from "./AuthLayout";
+import { useLocale } from "@/lib/useLocale";
+import { AppLink } from "@/components/paths/AppLink";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const createLoginSchema = (isRTL: boolean) => z.object({
   identifier: z
@@ -56,10 +57,11 @@ export default function LoginPage({ mode }: LoginPageProps) {
     return <Navigate to="/" replace />;
   }
   const { t } = useTranslation("common");
-  const lang = useAppSelector(selectLang);
-  const isRTL = lang === "ar";
+  const { isRTL, lang } = useLocale();
   const navigate = useNavigate();
-  const location = useLocation();
+  // Got to CurrentPage
+  const { saveCurrentPage } =
+    useAuthRedirect();
 
 
   const [showPassword, setShowPassword] =
@@ -107,7 +109,6 @@ export default function LoginPage({ mode }: LoginPageProps) {
       }
       saveAuth({ token: res.jwt, userId: res.user.id, role: res.user.accountType ?? "user" });
 
-
       toast.success(
         `${isRTL ? "تم تسجيل الدخول بنجاح" : "Logged in successfully"}`
       );
@@ -115,9 +116,7 @@ export default function LoginPage({ mode }: LoginPageProps) {
       const redirectPath =
         res.user.accountType === "admin"
           ? "/admin"
-          : sessionStorage.getItem(
-            "redirectAfterAuth"
-          ) || "/";
+          : "/";
 
       if (res.user.accountType !== "admin") {
         sessionStorage.removeItem(
@@ -125,9 +124,7 @@ export default function LoginPage({ mode }: LoginPageProps) {
         );
       }
 
-      navigate(redirectPath, {
-        replace: true,
-      });
+      navigate(`/${lang}${redirectPath}`, { replace: true });
 
     } catch {
       toast.error(
@@ -174,6 +171,7 @@ export default function LoginPage({ mode }: LoginPageProps) {
 
                   <Input
                     {...field}
+                    disabled={isLoading}
                     placeholder={`${isRTL ? "ادخل إيميلك..." : "Enter you email..."}`}
                   />
 
@@ -207,6 +205,7 @@ export default function LoginPage({ mode }: LoginPageProps) {
                   <div className="relative">
                     <Input
                       {...field}
+                      disabled={isLoading}
                       placeholder={`${isRTL ? "ادخل رقمك السري..." : "Enter your password..."}`}
                       type={
                         showPassword
@@ -248,12 +247,12 @@ export default function LoginPage({ mode }: LoginPageProps) {
               control={form.control}
               render={({ field }) => (
                 <div className="flex items-center justify-between gap-2">
-                  <Link
+                  <AppLink
                     to="/forgot-password"
                     className="text-primary"
                   >
                     {t("forgotPassword")}
-                  </Link>
+                  </AppLink>
 
                   <div className="flex items-center gap-2">
 
@@ -291,15 +290,13 @@ export default function LoginPage({ mode }: LoginPageProps) {
             {mode === "user" && (
               <div className="flex items-center gap-2">
                 <p>{t("dontHaveAccount")}</p>
-                <Link
+                <AppLink
                   to="/register"
-                  state={{
-                    redirect: location.pathname,
-                  }}
+                  onClick={saveCurrentPage}
                   className="text-primary"
                 >
                   {t("createAccount")}
-                </Link>
+                </AppLink>
               </div>
             )}
           </form>

@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import DarkModeToggle from "@/components/ui/DarkModeToggle";
 import LanguageToggle from "@/components/ui/LanguageToggle";
-import { Link, useNavigate } from "react-router-dom";
 import { getAuth, removeAuth } from "@/lib/authCookies";
 import { useGetCustomerByUserQuery, useGetProfileQuery } from "@/app/users/profileApi";
 import { GoPerson, GoSignOut } from "react-icons/go";
@@ -29,15 +28,16 @@ import { FaExchangeAlt } from "react-icons/fa";
 import { toast } from "sonner";
 import { useState } from "react";
 import { DialogDemo } from "@/components/shared/DialogDemo";
-import { useAppSelector } from "@/app/hooks";
-import { selectLang } from "@/app/features/language/languageSlice";
 import SettingsSkeleton from "@/components/skeletons/SettingsSkeleton";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
+import { useLocale } from "@/lib/useLocale";
+import { AppLink } from "@/components/paths/AppLink";
 
 export default function SettingsPage() {
-    const navigate = useNavigate();
+    const localeNavigate =
+        useLocaleNavigate();
     const { t } = useTranslation("settings");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     const userLoggedIn = getAuth();
     const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useGetProfileQuery(userLoggedIn?.userId);
     const { data: customer } = useGetCustomerByUserQuery(userLoggedIn?.userId);
@@ -52,7 +52,7 @@ export default function SettingsPage() {
         removeAuth();
         localStorage.removeItem("rememberedEmail");
         toast.success(t("logoutMessage"));
-        navigate(isAdmin ? "/admin" : "/", { replace: true })
+        localeNavigate(isAdmin ? "/admin" : "/");
     }
 
     if (isProfileLoading) {
@@ -104,7 +104,7 @@ export default function SettingsPage() {
                             <Separator className="mb-4" />
 
                             <nav className="flex flex-col gap-2">
-                                <Link to={settingsPath}>
+                                <AppLink to={settingsPath}>
                                     <Button
                                         variant="ghost"
                                         className="w-full justify-start gap-3 rounded-xl"
@@ -112,7 +112,7 @@ export default function SettingsPage() {
                                         <User size={18} />
                                         {t("profile")}
                                     </Button>
-                                </Link>
+                                </AppLink>
                                 <a href="#appearance" className="flex items-center gap-3">
                                     <Button
                                         variant="ghost"
@@ -175,7 +175,7 @@ export default function SettingsPage() {
                                         {t("userProfileContent")}
                                     </CardDescription>
                                 </div>
-                                <Link to={settingsPath}><Button variant={"secondary"}>{t("refresh")}</Button></Link>
+                                <AppLink to={settingsPath}><Button variant={"secondary"}>{t("refresh")}</Button></AppLink>
                             </CardHeader>
 
                             <CardContent className="grid gap-4 md:grid-cols-2">
@@ -318,11 +318,11 @@ export default function SettingsPage() {
                                         </p>
                                     </div>
 
-                                    <Link to={changePasswordPath}>
+                                    <AppLink to={changePasswordPath}>
                                         <Button variant={"secondary"} fullWidth className="text-white text-sm mb-2">
                                             {t("changePassword")} <FaExchangeAlt />
                                         </Button>
-                                    </Link>
+                                    </AppLink>
                                 </div>
                             </CardContent>
                         </Card>

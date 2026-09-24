@@ -9,7 +9,6 @@ import { useAddProductTranslationMutation, useCreateProductMutation, useGetSingl
 import { useAppSelector } from "@/app/hooks";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -18,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
+import { useLocale } from "@/lib/useLocale";
 
 const createProductSchema =
     (isRTL: boolean) =>
@@ -87,10 +88,9 @@ const createProductSchema =
         });
 
 const CreateProduct = () => {
-    const navigate = useNavigate();
+    const localeNavigate = useLocaleNavigate();
     const { t } = useTranslation("adminProducts");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     const [productLocale, setProductLocale] =
         useState<"en" | "ar">("en");
     const isTraslation = productLocale === "ar";
@@ -360,7 +360,7 @@ const CreateProduct = () => {
             setProductLocale("en");
 
             setTimeout(() => {
-                navigate("/admin/products");
+                localeNavigate("/admin/products");
             }, 1500)
 
         } catch {
@@ -376,7 +376,7 @@ const CreateProduct = () => {
                     isRTL ? `ملاحظة: يجب ان تعمل المنتج ب الانجليزى الاول` : `NOTE: You MUST Create product with English first` :
                     isRTL ? `اعمل المنتج بالعربى:` : `Create product with arabic:`}
                 </p>
-                <Button variant={"secondary"} onClick={() => navigate("/admin/products")}>{t("backToProdPage")}</Button>
+                <Button variant={"secondary"} onClick={() => localeNavigate("/admin/products")}>{t("backToProdPage")}</Button>
             </div>
             {productLocale == "ar" && (
                 <p className="text-destructive mb-2">

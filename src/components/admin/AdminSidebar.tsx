@@ -23,11 +23,8 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useTranslation } from "react-i18next";
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppSelector } from "@/app/hooks";
 import { useSidebar } from "@/components/ui/sidebar";
 import { getAuth, removeAuth } from "@/lib/authCookies";
 import { useGetCustomerByUserQuery, useGetProfileQuery } from "@/app/users/profileApi";
@@ -37,8 +34,12 @@ import { GoPerson } from "react-icons/go";
 import { DialogDemo } from "../shared/DialogDemo";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useLocale } from "@/lib/useLocale";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
+import { AppLink } from "../paths/AppLink";
+import AdminNavLinks from "./AdminNavLinks";
 
-const Pages = [
+const Pages = Object.freeze([
     {
         title: "dashboard",
         url: "/admin",
@@ -96,13 +97,13 @@ const Pages = [
         url: "/admin/settings",
         icon: Settings,
     },
-];
+]);
 
 export function AdminSidebar() {
-    const navigate = useNavigate();
+    const localeNavigate =
+        useLocaleNavigate();
     const { t } = useTranslation("adminCommon");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
 
     const userLoggedIn = getAuth();
     const { data: profileData, isLoading } = useGetProfileQuery(userLoggedIn?.userId);
@@ -123,7 +124,7 @@ export function AdminSidebar() {
         removeAuth();
         localStorage.removeItem("rememberedEmail");
         toast.success(t("logoutMessage"));
-        navigate("/admin/login", { replace: true })
+        localeNavigate("/admin/login");
     }
     return (
         <Sidebar
@@ -137,7 +138,7 @@ export function AdminSidebar() {
             {/* HEADER */}
             <SidebarHeader className={`border-b ${isCollapsed ? "p-2" : "p-4"}`}>
 
-                <Link to="/admin/settings/profile" onClick={handleClick} className={`
+                <AppLink to="/admin/settings/profile" onClick={handleClick} className={`
                         flex items-center
                         ${isCollapsed ? "justify-center" : "gap-3"}
                     `}>
@@ -180,7 +181,7 @@ export function AdminSidebar() {
                         </>
 
                     )}
-                </Link>
+                </AppLink>
             </SidebarHeader>
 
             {/* CONTENT */}
@@ -193,7 +194,7 @@ export function AdminSidebar() {
                         <SidebarMenu className="space-y-2">
                             {Pages.map((item) => (
                                 <SidebarMenuItem key={item.title} onClick={handleClick}>
-                                    <NavLink
+                                    <AdminNavLinks
                                         to={item.url}
                                         end={item.url === "/admin"}
                                         className={({ isActive }) =>
@@ -219,15 +220,12 @@ export function AdminSidebar() {
                                             <span className="font-medium">
                                                 {t(item.title)}
                                             </span></>}
-                                    </NavLink>
+                                    </AdminNavLinks>
 
                                 </SidebarMenuItem>
                             ))}
-
                         </SidebarMenu>
-
                     </SidebarGroupContent>
-
                 </SidebarGroup>
 
             </SidebarContent>

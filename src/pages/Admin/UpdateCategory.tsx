@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { useAppSelector } from "@/app/hooks";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -13,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useGetSingleCategoryQuery, useUpdateCategoryMutation } from "@/app/categories/admin/categoryApi";
 import AlertAdminDilaog from "@/components/admin/AlertDilaog";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
+import { useLocale } from "@/lib/useLocale";
 
 const UpdateCategorySchema =
     (isRTL: boolean) =>
@@ -30,13 +30,11 @@ const UpdateCategorySchema =
 const UpdateCategory = () => {
     const { documentId } = useParams();
     const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
+    const localeNavigate =
+        useLocaleNavigate();
+    const { isRTL } = useLocale();
     const { t } = useTranslation("adminCategories");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
     const currentCategoryLang = searchParams.get("lang") as "en" | "ar";
-
-    console.log(currentCategoryLang);
 
     const { data, isLoading } =
         useGetSingleCategoryQuery({
@@ -111,7 +109,7 @@ const UpdateCategory = () => {
                 setOpenAlertDialog(true);
                 return;
             }
-            setTimeout(() => navigate("/admin/categories"), 1500);
+            setTimeout(() => localeNavigate("/admin/categories"), 1500);
 
         } catch {
             toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
@@ -122,7 +120,7 @@ const UpdateCategory = () => {
         setUpdateConfirmed(true);
         setOpenAlertDialog(false);
 
-        navigate(`/admin/categories/update/${documentId}?lang=${nextLang}`);
+        localeNavigate(`/admin/categories/update/${documentId}?lang=${nextLang}`);
     };
 
     const handleUpdateClose = () => {
@@ -133,7 +131,7 @@ const UpdateCategory = () => {
         });
 
         setNextLang("");
-        setTimeout(() => navigate("/admin/categories"), 1500);
+        setTimeout(() => localeNavigate("/admin/categories"), 1500);
     }
 
     if (isLoading) return <p className="text-primary">{isRTL ? "جار التحميل..." : "Loading..."}</p>
@@ -142,7 +140,7 @@ const UpdateCategory = () => {
         <div className="p-4">
             <div className="flex items-center justify-between">
                 <p className="font-bold">{isRTL ? `عدل الفئة الحالية ${data?.data?.title}` : `Update current category ${data?.data?.title}`}</p>
-                <Button variant={"secondary"} onClick={() => navigate("/admin/categories")}>{t("backToCatePage")}</Button>
+                <Button variant={"secondary"} onClick={() => localeNavigate("/admin/categories")}>{t("backToCatePage")}</Button>
             </div>
             <p>
                 {currentCategoryLang === "en"

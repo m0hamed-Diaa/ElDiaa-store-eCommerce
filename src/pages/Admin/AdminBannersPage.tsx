@@ -1,5 +1,4 @@
 import { closeDialogAdmin, selectIsDialogOpen, toggleDialogAdmin } from "@/app/admin/uiDialogSlice";
-import { selectLang, toggleLanguage } from "@/app/features/language/languageSlice";
 import { useDeleteHeroSlideMutation, useGetHeroSlidesQuery } from "@/app/hero-slides/admin/heroSlice";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import AdminHeroSlidesSkeleton from "@/components/admin/skeletons/AdminHeroSlidesSkeleton";
@@ -11,19 +10,20 @@ import FilteringComponent from "@/components/shared/Filtering";
 import PaginationDemo from "@/components/shared/PaginationDemo";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableHead, TableRow } from "@/components/ui/table";
+import { useLocale } from "@/lib/useLocale";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
 import { formatTimeAgo } from "@/utils";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 
 const AdminHeroSlides = () => {
-    const navigate = useNavigate();
+    const localeNavigate =
+        useLocaleNavigate();
     const { t } = useTranslation("adminHeroSlides");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL, lang, changeLanguage } = useLocale();
     const [Lang, setLang] = useState<"ar" | "en">(lang);
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState<
@@ -58,10 +58,10 @@ const AdminHeroSlides = () => {
                     ? "تم حذف البانر بنجاح"
                     : "Banner deleted successfully"
             );
-            dispatch(toggleLanguage());
+            changeLanguage(lang === "ar" ? "en" : "ar");
             await DeleteHeroSlide(documentId).unwrap();
             setDeleteDocumentId("");
-            dispatch(toggleLanguage());
+            changeLanguage(lang === "ar" ? "en" : "ar")
             dispatch(closeDialogAdmin());
         } catch {
             toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
@@ -80,7 +80,7 @@ const AdminHeroSlides = () => {
                 <h1 className="text-3xl font-bold">
                     {t("heroSlides")}
                 </h1>
-                <Button className="w-full mt-2 sm:w-fit sm:mt-0" onClick={() => navigate("/admin/hero-slides/create")}>
+                <Button className="w-full mt-2 sm:w-fit sm:mt-0" onClick={() => localeNavigate("/admin/hero-slides/create")}>
                     {t("addNewSlide")}
                     <Plus />
                 </Button>

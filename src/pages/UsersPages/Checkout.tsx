@@ -27,17 +27,15 @@ import {
 } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import UserAddress from "@/components/UserAddress";
-import { useAppSelector } from "@/app/hooks";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { useGetCustomerByUserQuery } from "@/app/users/profileApi";
 import CheckoutSkeleton from "@/components/skeletons/CheckoutSkeleton";
 import { getAuth } from "@/lib/authCookies";
 import { usePageTitle } from "@/components/usePageTitle";
+import { useLocale } from "@/lib/useLocale";
 
 export default function CheckoutPage() {
     const { t } = useTranslation("checkout");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     usePageTitle("الدفع | متجر الضياء للإلكترونيات", "Checkout | El-diaa Store For Electronics")
 
     const auth = getAuth();

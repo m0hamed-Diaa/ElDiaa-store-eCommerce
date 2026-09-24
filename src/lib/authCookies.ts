@@ -25,8 +25,6 @@ export const getAuth = () => {
 };
 
 export const removeAuth = () => {
-    console.trace("AUTH REMOVED");
-
     cookies.remove(COOKIE_NAME, {
         path: "/",
     });

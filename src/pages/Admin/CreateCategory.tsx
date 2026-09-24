@@ -1,9 +1,6 @@
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { useAppSelector } from "@/app/hooks";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -12,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useAddCategoryTranslationMutation, useCreateCategoryMutation } from "@/app/categories/admin/categoryApi";
+import { useLocaleNavigate } from "@/lib/useLocaleNavigate";
+import { useLocale } from "@/lib/useLocale";
 
 const createCategoryScheme =
     (isRTL: boolean) =>
@@ -27,10 +26,10 @@ const createCategoryScheme =
         });
 
 const CreateCategory = () => {
-    const navigate = useNavigate();
+    const localeNavigate =
+        useLocaleNavigate();
     const { t } = useTranslation("adminCategories");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     const [categoryLocale, setCategoryLocale] =
         useState<"en" | "ar">("en");
 
@@ -155,11 +154,10 @@ const CreateCategory = () => {
             setCategoryLocale("en");
 
             setTimeout(() => {
-                navigate("/admin/categories");
+                localeNavigate("/admin/categories");
             }, 1500)
 
         } catch (error) {
-            console.log(error);
             toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
         }
     };
@@ -172,7 +170,7 @@ const CreateCategory = () => {
                     isRTL ? `ملاحظة: يجب ان تعمل الفئة ب الانجليزى الاول` : `NOTE: You MUST Create Category with English first` :
                     isRTL ? `اعمل الفئة بالعربى:` : `Create category with arabic:`}
                 </p>
-                <Button variant={"secondary"} onClick={() => navigate("/admin/products")}>{t("backToCatePage")}</Button>
+                <Button variant={"secondary"} onClick={() => localeNavigate("/admin/products")}>{t("backToCatePage")}</Button>
             </div>
             {categoryLocale == "ar" && (
                 <p className="text-destructive mb-2">

@@ -3,8 +3,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
-import { useAppSelector } from "@/app/hooks"
-import { selectLang } from "@/app/features/language/languageSlice"
+import { useLocale } from "@/lib/useLocale";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
@@ -68,8 +67,7 @@ function PaginationPrevious({
   text,
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
-  const lang = useAppSelector(selectLang);
-  const isRTL = lang === "ar";
+  const { isRTL } = useLocale();
   return (
     <PaginationLink
       aria-label="Go to previous page"
@@ -88,8 +86,7 @@ function PaginationNext({
   text,
   ...props
 }: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
-  const lang = useAppSelector(selectLang);
-  const isRTL = lang === "ar";
+  const { isRTL } = useLocale();
   return (
     <PaginationLink
       aria-label="Go to next page"

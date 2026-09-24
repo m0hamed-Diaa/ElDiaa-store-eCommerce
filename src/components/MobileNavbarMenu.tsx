@@ -9,11 +9,8 @@ import {
 } from "@/components/ui/sheet";
 import { memo, useCallback, useState } from "react";
 import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 
-import type { RootState } from "@/app/store";
 import DarkModeToggle from "./ui/DarkModeToggle";
 import LanguageToggle from "./ui/LanguageToggle";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
@@ -25,6 +22,8 @@ import { getAuth } from "@/lib/authCookies";
 import { useGetProfileQuery } from "@/app/users/profileApi";
 import UserProfileIcon from "./UserProfileIcon";
 import { toast } from "sonner";
+import { useLocale } from "@/lib/useLocale";
+import { AppLink } from "./paths/AppLink";
 
 const MobileNavbarMenu = () => {
     const [open, setOpen] = useState(false);
@@ -32,8 +31,7 @@ const MobileNavbarMenu = () => {
         setOpen(false);
     }, [])
     const { t } = useTranslation("common");
-    const lang = useSelector((state: RootState) => state.language.lang);
-    const isRTL = lang === "ar";
+    const { isRTL, lang } = useLocale();
     const cartItems = useAppSelector(selectCartItems);
     const { data } = useGetCategoriesQuery({ lang });
     const dispatch = useAppDispatch();
@@ -91,49 +89,49 @@ const MobileNavbarMenu = () => {
 
                         {/* Links */}
                         <nav className="flex flex-col gap-2 px-2">
-                            <Link
+                            <AppLink
                                 to="/"
                                 onClick={closeSheet}
                                 className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("home")}
                                 <ChevronRight size={18} />
-                            </Link>
+                            </AppLink>
 
-                            <Link
+                            <AppLink
                                 to="/products"
                                 onClick={closeSheet}
                                 className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("products")}
                                 <ChevronRight size={18} />
-                            </Link>
+                            </AppLink>
 
-                            <Link
+                            <AppLink
                                 to="/about"
                                 onClick={closeSheet}
                                 className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("about")}
                                 <ChevronRight size={18} />
-                            </Link>
+                            </AppLink>
 
-                            <Link
+                            <AppLink
                                 to="/contact"
                                 onClick={closeSheet}
                                 className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("contact")}
                                 <ChevronRight size={18} />
-                            </Link>
-                            <Link
+                            </AppLink>
+                            <AppLink
                                 to="/settings"
                                 onClick={closeSheet}
                                 className="flex items-center justify-between rounded-xl px-4 py-2 text-base font-medium transition-all hover:bg-accent"
                             >
                                 {t("settings")}
                                 <ChevronRight size={18} />
-                            </Link>
+                            </AppLink>
                         </nav>
 
                         {/* Categories */}
@@ -147,19 +145,19 @@ const MobileNavbarMenu = () => {
 
                                 {data?.data?.length ?
                                     <>
-                                        <Link to={`/products`} className="rounded-xl px-4 py-3 transition-all hover:bg-accent">
+                                        <AppLink to={`/products`} className="rounded-xl px-4 py-3 transition-all hover:bg-accent">
                                             {t("all")}
-                                        </Link>
+                                        </AppLink>
                                         {data?.data?.map((cat: StrapiCategory) => {
                                             return (
-                                                <Link
+                                                <AppLink
                                                     key={cat.id}
                                                     to={`products?category=${cat?.documentId}`}
                                                     onClick={closeSheet}
                                                     className="rounded-xl px-4 py-3 transition-all hover:bg-accent"
                                                 >
                                                     {cat.title}
-                                                </Link>
+                                                </AppLink>
                                             )
                                         })}
                                     </>

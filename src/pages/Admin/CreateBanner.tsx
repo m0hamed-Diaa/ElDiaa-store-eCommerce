@@ -4,10 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useUploadFilesMutation } from "@/app/features/Upload/uploadApi";
 import { useGetCategoriesQuery } from "@/app/categories/admin/categoryApi";
 import { useEffect, useRef, useState } from "react";
-import { useAppSelector } from "@/app/hooks";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { selectLang } from "@/app/features/language/languageSlice";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -23,6 +21,7 @@ import { Card } from "@/components/ui/card";
 import { bannerLinkTypes } from "@/lib/BannerTypes";
 import { useAddHeroSlideTranslationMutation, useCreateHeroSlideMutation, useGetSingleHeroSlideQuery } from "@/app/hero-slides/admin/heroSlice";
 import { useGetProductsQuery } from "@/app/products/user/productsApi";
+import { useLocale } from "@/lib/useLocale";
 
 export const createBannerSchema = (isRTL: boolean) =>
     z
@@ -153,8 +152,7 @@ export const createBannerSchema = (isRTL: boolean) =>
 const CreateBanner = () => {
     const navigate = useNavigate();
     const { t } = useTranslation("adminHeroSlides");
-    const lang = useAppSelector(selectLang);
-    const isRTL = lang === "ar";
+    const { isRTL } = useLocale();
     const [bannerLocale, setProductLocale] =
         useState<"en" | "ar">("en");
     const isTranslation = bannerLocale === "ar";
@@ -363,7 +361,6 @@ const CreateBanner = () => {
                 );
                 return;
             }
-            console.log("pr", values.title, values.subtitle, productDocumentId, bannerLocale)
             await addBannerTranslation({
                 documentId: productDocumentId,
 
@@ -401,7 +398,6 @@ const CreateBanner = () => {
             }, 1500)
 
         } catch (error) {
-            console.log(error);
             toast.error(isRTL ? "حدث شئ خطأ، حاول مرة اخري لاحقا" : "Something went wrong, try again leter");
         }
     };

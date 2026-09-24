@@ -4,6 +4,7 @@ import { FaHome } from "react-icons/fa";
 import { IoMdRefresh } from "react-icons/io";
 import { useTranslation } from "react-i18next";
 import diaaLogo from "@/assets/diaa-logo.png";
+import { useLocale } from "@/lib/useLocale";
 
 interface IProps {
   statusCode?: number;
@@ -15,6 +16,7 @@ const ErrorHandler = ({
 
 }: IProps) => {
   const { t } = useTranslation("common");
+  const { lang } = useLocale();
   const handleRefresh = () => {
     window.location.reload();
   };
@@ -48,7 +50,7 @@ const ErrorHandler = ({
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <Link to={`${path}`} className="w-full sm:w-auto">
+          <Link to={`/${lang}${path}`} className="w-full sm:w-auto">
             <Button
               size="lg"
               className="w-full sm:w-auto bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 group"

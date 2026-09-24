@@ -16,8 +16,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { GoPerson } from "react-icons/go";
 import { MdBrowserUpdated } from "react-icons/md";
 import { DialogDemo } from "@/components/shared/DialogDemo";
-import { selectLang } from "@/app/features/language/languageSlice";
-import { useAppSelector } from "@/app/hooks";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,9 +26,10 @@ import { validateImage } from "@/lib/imageValidation";
 import { useUploadFilesMutation } from "@/app/features/Upload/uploadApi";
 import { uploadSingleImage } from "@/lib/uploadImage";
 import UserAddress from "@/components/UserAddress";
-import { Link } from "react-router-dom";
 import { FaExchangeAlt } from "react-icons/fa";
 import { usePageTitle } from "@/components/usePageTitle";
+import { useLocale } from "@/lib/useLocale";
+import { AppLink } from "@/components/paths/AppLink";
 
 const createProfileSchema = (isRTL: boolean) => z.object({
   username: z
@@ -45,8 +44,7 @@ const createProfileSchema = (isRTL: boolean) => z.object({
 
 export default function ProfilePage() {
   const { t } = useTranslation("settings");
-  const lang = useAppSelector(selectLang);
-  const isRTL = lang === "ar";
+  const { isRTL } = useLocale();
   // Title name
   usePageTitle(
     "الملف الشخصى",
@@ -280,11 +278,11 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-            <Link to={changePasswordPath}>
-              <Button variant={"secondary"} fullWidth className="text-white text-sm mb-2">
+            <AppLink to={changePasswordPath}>
+              <Button variant={"secondary"} fullWidth className="text-sm mb-2">
                 {t("changePassword")} <FaExchangeAlt />
               </Button>
-            </Link>
+            </AppLink>
           </div>
 
           <Separator className="my-8" />
