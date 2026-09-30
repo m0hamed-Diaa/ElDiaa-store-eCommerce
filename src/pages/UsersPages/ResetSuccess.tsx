@@ -4,7 +4,7 @@ import ForPassCom from "@/assets/ForgetPasswordComplete.png";
 import { Button } from "@/components/ui/button";
 
 
-export default function EmailConfirmation() {
+export default function ResetSuccess() {
     const navigate = useNavigate();
     const { isRTL, lang } = useLocale();
 
@@ -19,11 +19,11 @@ export default function EmailConfirmation() {
                 </div>
 
                 <h1 className="mb-3 text-2xl font-bold text-primary">
-                    {isRTL ? " تم تأكيد البريد الإلكتروني بنجاح" : "Email Confirmed successfully"}
+                    {isRTL ? "تم تغيير كلمة المرور بنجاح" : "Password changed successfully"}
                 </h1>
 
                 <p className="text-gray-500 mb-2">
-                    {isRTL ? "تهانينا! تم تأكيد البريد البريد الإلكتروني بنجاح يمكنك الآن تسجيل الدخول للإستمتاع بتجربة آمنة وسلسة." : "Congratulations! You have successfully verified your email. You can now log in for enjoying a safe and smooth experience."}
+                    {isRTL ? "تهانينا! تم تأكيد البريد البريد الإلكتروني بنجاح يمكنك الآن تسجيل الدخول باستخدام بياناتك المحدثة والاستمتاع بتجربة آمنة وسلسة." : "Congratulations! You have successfully verified your email. You can now log in with your updated info and enjoy a safe and smooth experience."}
                 </p>
 
                 <Button fullWidth onClick={() => navigate(`/${lang}/login`)}>{isRTL ? "تسجيل الدخول" : "Login"}</Button>

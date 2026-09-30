@@ -38,6 +38,7 @@ import UpdateCategory from "@/pages/Admin/UpdateCategory";
 import UpdateBanner from "@/pages/Admin/UpdateBannerPage";
 import CreateBanner from "@/pages/Admin/CreateBanner";
 import EmailConfirmation from "@/pages/UsersPages/EmailConfirmation";
+import ResetSuccess from "@/pages/UsersPages/ResetSuccess";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -80,6 +81,12 @@ const router = createBrowserRouter(
           <Route
             path="email-confirmation"
             element={<EmailConfirmation />}
+          />
+
+          {/* Email Confirmation Route */}
+          <Route
+            path="reset-success"
+            element={<ResetSuccess />}
           />
           {/* Protected Routes */}
           <Route element={<UserProtectedRoute />}>
