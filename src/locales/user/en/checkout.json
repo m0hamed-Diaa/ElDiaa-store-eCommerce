@@ -1,6 +1,8 @@
 {
   "checkout": "Checkout",
   "shippingAdd": "Shipping Address",
+  "decreaseProduct": "Decrease Product Quantity",
+  "increaseProduct": "Increase Product Quantity",
   "paymentMethod": " Payment Mehtod",
   "cashOnDelivery": "Cash On Delivery",
   "creditCard": "Credit Card",

@@ -150,6 +150,16 @@ export interface ICustomerProfile {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ICustomerMessage {
+  id: number;
+  documentId: string;
+  username: string;
+  email: string;
+  message: string;
+  createdAt?: string;
+}
+
 export interface IUserProfile {
   id: number;
   documentId: string;

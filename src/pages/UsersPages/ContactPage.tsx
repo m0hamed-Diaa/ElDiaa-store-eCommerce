@@ -1,27 +1,103 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Mail,
   Phone,
-  SendHorizonal,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import companyLogo from "@/assets/mohamedDiaa-logo.png";
 import { usePageTitle } from "@/components/usePageTitle";
 import { useLocale } from "@/lib/useLocale";
+import { getAuth } from "@/lib/authCookies";
+import { useGetProfileQuery } from "@/app/users/profileApi";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Spinner } from "@/components/ui/spinner";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { useAddMessageMutation } from "@/app/messages/messagesApi";
+import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
+import UserMessages from "@/components/UserMessages";
+
+const createContactSchema = (isRTL: boolean) => z.object({
+  username: z
+    .string()
+    .min(8, `${isRTL ? "يجب أن يكون اسم المستخدم على الأقل 8 أحرف" : "Username must be at least 8 characters"}`),
+
+  email: z
+    .string()
+    .email(`${isRTL ? "يجب أن يكون البريد الإلكتروني صحيحًا" : "Email must be a valid email"}`),
+
+  message: z
+    .string()
+    .min(80, `${isRTL ? "يجب أن يكون الرسالة على الأقل 80 حرفًا" : "Message must be at least 80 characters"}`),
+})
 
 const ContactPage = () => {
   const { isRTL } = useLocale();
   const { t } = useTranslation("contact");
   usePageTitle("التواصل | متجر الضياء للإلكترونيات", "Contact | El-diaa Store For Electronics")
+  const userLoggedIn = getAuth();
+  const { data } = useGetProfileQuery(userLoggedIn?.userId);
+
+  const [addMessage, { isLoading }] =
+    useAddMessageMutation();
+
+  const ContactScheme = createContactSchema(isRTL);
+  type ContactValues =
+    z.infer<ReturnType<
+      typeof createContactSchema
+    >>;
+
+  const form = useForm<ContactValues>({
+    resolver: zodResolver(ContactScheme),
+    defaultValues: {
+      username: "",
+      email: "",
+      message: "",
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        username: data?.username || "",
+        email: data?.email || "",
+        message: "",
+      });
+    }
+  }, [data, form]);
+
+  const onSubmit = async (
+    values: ContactValues
+  ) => {
+    try {
+      await addMessage({
+        ...values,
+        user: data?.id
+      }).unwrap();
+      toast.success(isRTL ? "تم إرسال الرسالة بنجاح، سيتم التواصل معك في أقرب وقت" : "Message sent successfully, we will contact you as soon as possible");
+      form.reset({
+        username: data?.username || "",
+        email: data?.email || "",
+        message: "",
+      });
+    } catch {
+      toast.error(
+        (isRTL ? "فشل إرسال الرسالة" : "Failed to send message")
+      );
+    }
+  };
+
 
   return (
     <div
       className={`min-h-screen bg-background text-foreground ${isRTL ? "rtl text-right" : "ltr text-left"
         }`}
-    >
+    >F
       {/* Hero */}
       <section className="border-b border-border/50">
         <div className="container mx-auto px-6 py-24">
@@ -59,7 +135,7 @@ const ContactPage = () => {
                 <h3 className="underline text-primary">+201095382588</h3>
               </div>
               <Button className="p-2 mt-2">
-                <a href="tel:+201095382588" className="mt-1 text-muted-foreground rtl:">
+                <a href="tel:201095382588" className="mt-1 text-muted-foreground rtl:">
                   {t("badge")} 📞
                 </a>
               </Button>
@@ -105,42 +181,142 @@ const ContactPage = () => {
         </Card>
 
         {/* Form */}
-        <Card className="rounded-3xl border-border/50">
-          <CardContent className="p-8">
-            <h2 className="text-3xl font-black">
-              {t("form.title")}
-            </h2>
+        {data && (
+          <Card className="rounded-3xl border-border/50">
+            <CardContent className="p-8">
+              <form
+                onSubmit={form.handleSubmit(
+                  onSubmit
+                )}
+                className="space-y-5"
+              >
+                <Controller
+                  name="username"
+                  control={form.control}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <Field
+                      data-invalid={
+                        fieldState.invalid
+                      }
+                    >
+                      <FieldLabel>
+                        {t("form.fullName")}
+                      </FieldLabel>
 
-            <div className="mt-8 space-y-5">
-              <Input
-                placeholder={t("form.fullName")}
-                className="h-12 rounded-xl"
-              />
+                      <Input
+                        {...field}
+                        disabled={isLoading}
+                        placeholder={`${isRTL ? "ادخل اسم المستخدم..." : "Enter your username..."}`}
+                      />
 
-              <Input
-                placeholder={t("form.email")}
-                className="h-12 rounded-xl"
-              />
+                      {fieldState.error && (
+                        <FieldError
+                          errors={[
+                            fieldState.error,
+                          ]}
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
 
-              <Textarea
-                placeholder={t("form.message")}
-                className="min-h-40 rounded-xl"
-              />
+                <Controller
+                  name="email"
+                  control={form.control}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <Field
+                      data-invalid={
+                        fieldState.invalid
+                      }
+                    >
+                      <FieldLabel>
+                        {t("form.email")}
+                      </FieldLabel>
 
-              <Button fullWidth>
-                {isRTL ? <>
-                  {t("form.submit")}
-                  <SendHorizonal size={18} />
-                </> :
-                  <>
-                    <SendHorizonal size={18} />
-                    {t("form.submit")}
-                  </>
-                }
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          disabled={isLoading}
+                          placeholder={`${isRTL ? "ادخل إيميلك..." : "Enter your email..."}`}
+                        />
+                      </div>
+
+                      {fieldState.error && (
+                        <FieldError
+                          errors={[
+                            fieldState.error,
+                          ]}
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="message"
+                  control={form.control}
+                  render={({
+                    field,
+                    fieldState,
+                  }) => (
+                    <Field
+                      data-invalid={
+                        fieldState.invalid
+                      }
+                    >
+                      <FieldLabel>
+                        {t("form.message")}
+                      </FieldLabel>
+
+                      <div className="relative">
+                        <Textarea
+                          {...field}
+                          rows={5}
+                          disabled={isLoading}
+                          placeholder={t("form.message")}
+                        />
+                      </div>
+
+                      {fieldState.error && (
+                        <FieldError
+                          errors={[
+                            fieldState.error,
+                          ]}
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Button
+                  className="w-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      {isRTL ? "جار إرسال الرسالة..." : "Sending message..."}
+                      <Spinner />
+                    </>
+                  ) : (
+                    <>
+                      {t("form.submit")}
+                    </>
+                  )}
+                </Button>
+
+              </form>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* User Message*/}
+        <UserMessages />
+
       </section>
     </div>
   );

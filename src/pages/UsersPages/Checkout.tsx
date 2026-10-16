@@ -32,14 +32,45 @@ import CheckoutSkeleton from "@/components/skeletons/CheckoutSkeleton";
 import { getAuth } from "@/lib/authCookies";
 import { usePageTitle } from "@/components/usePageTitle";
 import { useLocale } from "@/lib/useLocale";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { decreaseQuantity, increaseQuantity, removeFromCart, selectCartItems, selectCartTotal } from "@/app/features/cartSlice";
+import { DialogDemo } from "@/components/shared/DialogDemo";
+import { RiDeleteBin5Fill } from "react-icons/ri";
+import { GoPlus } from "react-icons/go";
+import { FiMinus } from "react-icons/fi";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export default function CheckoutPage() {
     const { t } = useTranslation("checkout");
+    const dispatch = useAppDispatch();
     const { isRTL } = useLocale();
     usePageTitle("الدفع | متجر الضياء للإلكترونيات", "Checkout | El-diaa Store For Electronics")
 
     const auth = getAuth();
     const { isLoading, isError } = useGetCustomerByUserQuery(auth?.userId);
+    const cartItems = useAppSelector(selectCartItems);
+    // Increase Product
+    const IncreaseProduct = (id: number) => {
+        dispatch(increaseQuantity(id))
+        toast.success(t("increaseProduct"))
+    }
+    // Decrease Product
+    const DecreaseProduct = (id: number) => {
+        dispatch(decreaseQuantity(id))
+        toast.success(t("decreaseProduct"))
+    }
+    // Delete Product
+    const [isDeleting, setDeleting] = useState<boolean>(false);
+    const DeleteProduct = (id: number) => {
+        setDeleting(true);
+        dispatch(removeFromCart(id))
+        toast.error(t("removeProduct"));
+        setDeleting(false);
+    }
+    const totalPrice = useAppSelector(selectCartTotal);
+
+
     if (isLoading) {
         return (
             <div className="p-4">
@@ -127,57 +158,67 @@ export default function CheckoutPage() {
                         </CardHeader>
 
                         <CardContent>
+                            {/* PRODUCTS ITEMS */}
+                            <div className="flex-1 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden p-4 space-y-4">
+                                {cartItems.map((item) => (
+                                    <div
+                                        key={item.id}
+                                        className="flex items-center gap-3 rounded-xl border p-3"
+                                    >
+                                        <img
+                                            src={item.thumbnail.formats?.thumbnail?.url}
+                                            alt={item.title}
+                                            className="h-20 w-20 rounded-lg object-cover"
+                                        />
 
-                            {/* Product */}
-                            <div className="flex gap-3 mb-4">
+                                        <div className="flex-1">
+                                            <h3 className="line-clamp-1 font-semibold">
+                                                {item.title}
+                                            </h3>
 
-                                <img
-                                    src="https://placehold.co/100"
-                                    className="w-20 h-20 rounded-lg object-cover"
-                                />
-
-                                <div>
-                                    <h3 className="font-medium">
-                                        iPhone 16 Pro Max
-                                    </h3>
-
-                                    <p className="text-sm text-muted-foreground">
-                                        Qty: 1
-                                    </p>
-
-                                    <p className="font-semibold">
-                                        $999
-                                    </p>
-                                </div>
-
+                                            <p className="text-sm text-muted-foreground mt-2">
+                                                {item.quantity} × {item.finalPrice} {t("EGY")}
+                                            </p>
+                                            <div className="mt-2 flex gap-2 items-center">
+                                                <Button className="w-2 h-5" variant={"outline"} onClick={() => IncreaseProduct(item.id)}><GoPlus /></Button>
+                                                {item.quantity === 1 ?
+                                                    <DialogDemo title={`${isRTL ? `هل تريد حذف هذا المنتج؟ ${item.title}` : `Delete this product?: ${item.title}`}`} submitButton={`${isRTL ? "حذف المنتج" : "Delete product"}`} onClick={() => DeleteProduct(item.id)} loading={isDeleting}>
+                                                        <RiDeleteBin5Fill className="w-4 h-5 duration-300 hover:text-destructive cursor-pointer" />
+                                                    </DialogDemo>
+                                                    : <Button className="w-2 h-5" variant={"outline"} onClick={() => DecreaseProduct(item.id)}> <FiMinus /> </Button>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                                }
                             </div>
-
                             <Separator className="my-4" />
 
                             <div className="space-y-3">
 
                                 <div className="flex justify-between">
                                     <span>{t("subtotal")}</span>
-                                    <span>$999</span>
+                                    <span>${totalPrice}</span>
                                 </div>
 
                                 <div className="flex justify-between">
                                     <span>{t("shipping")}</span>
-                                    <span>$10</span>
+                                    <span>$10.00</span>
                                 </div>
 
                                 <div className="flex justify-between">
                                     <span>{t("tax")}</span>
-                                    <span>$20</span>
+                                    <span>${(totalPrice * 0.1)}</span>
                                 </div>
 
                             </div>
+                            {/* PRODUCTS */}
 
                             <Separator className="my-4" />
 
                             <div className="flex justify-between text-lg font-bold">
                                 <span>{t("total")}</span>
-                                <span>$1029</span>
+                                <span>${totalPrice + 10.00 + (totalPrice * 0.1)}</span>
                             </div>
 
                             <div className="mt-5 flex gap-2">

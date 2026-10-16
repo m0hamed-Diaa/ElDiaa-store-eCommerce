@@ -31,6 +31,7 @@ import { adminCategoriesApi } from "./categories/admin/categoryApi";
 import { adminHeroSlidesApi } from "./hero-slides/admin/heroSlice";
 import { authApiSlice } from "./users/authApi";
 import { userProfileApi } from "./users/profileApi";
+import { userMessagesApi } from "./messages/messagesApi";
 import { uploadApi } from "./features/Upload/uploadApi";
 import uiDialogSlice from "./admin/uiDialogSlice";
 
@@ -57,6 +58,7 @@ export const store = configureStore({
         // Authentication and User Profile
         [authApiSlice.reducerPath]: authApiSlice.reducer,
         [userProfileApi.reducerPath]: userProfileApi.reducer,
+        [userMessagesApi.reducerPath]: userMessagesApi.reducer,
         [uploadApi.reducerPath]: uploadApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
@@ -64,7 +66,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(productsApi.middleware, adminProductsApi.middleware, categoryApi.middleware, adminCategoriesApi.middleware, heroSlideApi.middleware, adminHeroSlidesApi.middleware, authApiSlice.middleware, userProfileApi.middleware, uploadApi.middleware),
+        }).concat(productsApi.middleware, adminProductsApi.middleware, categoryApi.middleware, adminCategoriesApi.middleware, heroSlideApi.middleware, adminHeroSlidesApi.middleware, authApiSlice.middleware, userProfileApi.middleware, userMessagesApi.middleware, uploadApi.middleware),
 });
 
 export const persistor = persistStore(store);

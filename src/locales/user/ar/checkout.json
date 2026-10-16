@@ -1,6 +1,8 @@
 {
   "checkout": "الدفع",
   "shippingAdd": "عنوان الشحن",
+  "decreaseProduct": "إنقاص كمية المنتج",
+  "increaseProduct": "زيادة كمية المنتج",
   "paymentMethod": "طريقة الدفع",
   "cashOnDelivery": "الدفع عند الاستلام",
   "creditCard": "كريدت كارد",
