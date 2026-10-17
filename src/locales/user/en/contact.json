@@ -20,6 +20,16 @@
 
     "message": "Write your message...",
 
-    "submit": "Send Message"
+    "submit": "Send Message",
+    "messageSuccess": "Your message send Successfully, and will contact you later",
+    "messageError": "Oops! Something went wrong while sending your message. Try again.",
+    "messageIfError": "Something went wrong while loading messages.",
+    "loading": "The message is being sent...",
+    "noMessagesTitle": "No messages",
+    "noMessagesDescription": "The messages you send will show up here",
+    "myMessages": "My messages",
+    "myMessage": "My message",
+    "messageSend": "Sent",
+    "alertMessages": "You can check out all the messages you've sent."
   }
 }

@@ -79,16 +79,14 @@ const ContactPage = () => {
         ...values,
         user: data?.id
       }).unwrap();
-      toast.success(isRTL ? "تم إرسال الرسالة بنجاح، سيتم التواصل معك في أقرب وقت" : "Message sent successfully, we will contact you as soon as possible");
+      toast.success(t("form.messageSuccess"));
       form.reset({
         username: data?.username || "",
         email: data?.email || "",
         message: "",
       });
     } catch {
-      toast.error(
-        (isRTL ? "فشل إرسال الرسالة" : "Failed to send message")
-      );
+      toast.error(t("form.messageError"));
     }
   };
 
@@ -97,7 +95,7 @@ const ContactPage = () => {
     <div
       className={`min-h-screen bg-background text-foreground ${isRTL ? "rtl text-right" : "ltr text-left"
         }`}
-    >F
+    >
       {/* Hero */}
       <section className="border-b border-border/50">
         <div className="container mx-auto px-6 py-24">
@@ -314,7 +312,7 @@ const ContactPage = () => {
           </Card>
         )}
 
-        {/* User Message*/}
+        {/* User Message */}
         <UserMessages />
 
       </section>
